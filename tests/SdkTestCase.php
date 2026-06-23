@@ -29,7 +29,10 @@ abstract class SdkTestCase extends TestCase
         $stack = HandlerStack::create(new MockHandler($responses));
         $stack->push(Middleware::history($this->history));
 
-        return new PromptJuggler($apiKey, new Client(['handler' => $stack]));
+        // http_errors=false mirrors Kiota's own client (its handler stack omits the
+        // http_errors middleware), so 4xx/5xx flow to the adapter instead of Guzzle
+        // throwing first — which is what the SDK's error translation relies on.
+        return new PromptJuggler($apiKey, new Client(['handler' => $stack, 'http_errors' => false]));
     }
 
     protected function lastRequest(): RequestInterface

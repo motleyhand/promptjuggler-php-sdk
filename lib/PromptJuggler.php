@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace PromptJuggler\Client;
 
 use GuzzleHttp\ClientInterface;
+use Microsoft\Kiota\Abstractions\ApiException as KiotaApiException;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
 use Microsoft\Kiota\Http\GuzzleRequestAdapter;
 use PromptJuggler\Client\Auth\StaticAccessTokenProvider;
+use PromptJuggler\Client\Exception\ApiException;
 use PromptJuggler\Client\Models\CreatePromptRun;
 use PromptJuggler\Client\Models\CreatePromptRun_envVars;
 use PromptJuggler\Client\Models\CreatePromptRun_inputs;
@@ -20,6 +22,7 @@ use PromptJuggler\Client\Models\CreateWorkflowRun_inputs;
 use PromptJuggler\Client\Models\CreateWorkflowRun_metadata;
 use PromptJuggler\Client\Models\CreateWorkflowRun_priority;
 use PromptJuggler\Client\Models\CreateWorkflowRunResponse;
+use PromptJuggler\Client\Models\ErrorResponse;
 use PromptJuggler\Client\Models\KnowledgeBaseResponse;
 use PromptJuggler\Client\Models\KnowledgeDocumentResponse;
 use PromptJuggler\Client\Models\PromptRevision;
@@ -43,12 +46,12 @@ final class PromptJuggler
 
     public function getPrompt(string $slug, int|string $version): PromptRevision
     {
-        return $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->get()->wait();
+        return $this->send(fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->get()->wait());
     }
 
     /**
-     * @param array<string, string>          $inputs
-     * @param array<string, string>|null     $envVars
+     * @param array<string, string>               $inputs
+     * @param array<string, string>|null          $envVars
      * @param array<string, string|string[]>|null $metadata
      */
     public function runPrompt(
@@ -91,17 +94,17 @@ final class PromptJuggler
             $body->setChannel($channel);
         }
 
-        return $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait();
+        return $this->send(fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait());
     }
 
     public function getPromptRun(string $id): PromptRun
     {
-        return $this->client->api()->v1()->promptruns()->byId($id)->get()->wait();
+        return $this->send(fn () => $this->client->api()->v1()->promptruns()->byId($id)->get()->wait());
     }
 
     /**
-     * @param array<string, string>          $inputs
-     * @param array<string, string>|null     $envVars
+     * @param array<string, string>               $inputs
+     * @param array<string, string>|null          $envVars
      * @param array<string, string|string[]>|null $metadata
      */
     public function runWorkflow(
@@ -140,26 +143,49 @@ final class PromptJuggler
             $body->setMetadata($metadataModel);
         }
 
-        return $this->client->api()->v1()->workflows()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait();
+        return $this->send(fn () => $this->client->api()->v1()->workflows()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait());
     }
 
     public function getWorkflowRun(string $id): WorkflowRun
     {
-        return $this->client->api()->v1()->workflowruns()->byId($id)->get()->wait();
+        return $this->send(fn () => $this->client->api()->v1()->workflowruns()->byId($id)->get()->wait());
     }
 
     public function getKnowledgeBase(string $slug): KnowledgeBaseResponse
     {
-        return $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->get()->wait();
+        return $this->send(fn () => $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->get()->wait());
     }
 
     public function getKnowledgeDocument(string $id): KnowledgeDocumentResponse
     {
-        return $this->client->api()->v1()->knowledgeDocuments()->byId($id)->get()->wait();
+        return $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->get()->wait());
     }
 
     public function deleteKnowledgeDocument(string $id): void
     {
-        $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait();
+        $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
+    }
+
+    /**
+     * Run the request and translate Kiota's API exception into the SDK's own, so
+     * callers never see a Microsoft\Kiota type.
+     *
+     * @template T
+     *
+     * @param callable(): T $request
+     *
+     * @return T
+     */
+    private function send(callable $request): mixed
+    {
+        try {
+            return $request();
+        } catch (KiotaApiException $e) {
+            $message = $e instanceof ErrorResponse && $e->getError() !== null
+                ? $e->getError()
+                : $e->getMessage();
+
+            throw new ApiException($message, $e->getResponseStatusCode(), $e);
+        }
     }
 }
