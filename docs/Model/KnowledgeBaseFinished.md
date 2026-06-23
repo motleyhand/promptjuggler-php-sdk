@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** | Knowledge base ID |
-**status** | [**\OpenAPI\Client\Model\KnowledgeBaseStatus**](KnowledgeBaseStatus.md) | Knowledge base status |
+**status** | [**\PromptJuggler\Client\Model\KnowledgeBaseStatus**](KnowledgeBaseStatus.md) | Knowledge base status |
 **documentCount** | **int** | Total document count |
 **chunkCount** | **int** | Total chunk count |
 

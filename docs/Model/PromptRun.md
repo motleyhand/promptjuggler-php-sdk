@@ -5,7 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** | Prompt run ID. |
-**status** | [**\OpenAPI\Client\Model\RunStatus**](RunStatus.md) | Current run status. |
+**status** | [**\PromptJuggler\Client\Model\RunStatus**](RunStatus.md) | Current run status. |
 **createdAt** | **\DateTime** | Timestamp when the run was created. |
 **finishedAt** | **\DateTime** | Timestamp when the run finished. Null while the run is pending. | [optional]
 **output** | **string** | LLM output text. Null while pending or when the run failed. | [optional]

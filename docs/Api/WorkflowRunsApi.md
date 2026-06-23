@@ -1,17 +1,17 @@
-# OpenAPI\Client\WorkflowRunsApi
+# PromptJuggler\Client\WorkflowRunsApi
 
-All URIs are relative to https://promptjuggler.com/api/v1.
+All URIs are relative to https://promptjuggler.com/api/v1, except if the operation defines another base path.
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**createWorkflowRun()**](WorkflowRunsApi.md#createWorkflowRun) | **POST** /api/v1/workflows/{slug}/{version}/runs | Create and trigger a workflow run
-[**getWorkflowRun()**](WorkflowRunsApi.md#getWorkflowRun) | **GET** /api/v1/workflowruns/{id} | Get a workflow run by ID
+| Method | HTTP request | Description |
+| ------------- | ------------- | ------------- |
+| [**createWorkflowRun()**](WorkflowRunsApi.md#createWorkflowRun) | **POST** /api/v1/workflows/{slug}/{version}/runs | Create and trigger a workflow run |
+| [**getWorkflowRun()**](WorkflowRunsApi.md#getWorkflowRun) | **GET** /api/v1/workflowruns/{id} | Get a workflow run by ID |
 
 
 ## `createWorkflowRun()`
 
 ```php
-createWorkflowRun($slug, $version, $CreateWorkflowRun): \OpenAPI\Client\Model\CreateWorkflowRunResponse
+createWorkflowRun($slug, $version, $CreateWorkflowRun): \PromptJuggler\Client\Model\CreateWorkflowRunResponse
 ```
 
 Create and trigger a workflow run
@@ -26,18 +26,18 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\WorkflowRunsApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\WorkflowRunsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
 $slug = 'slug_example'; // string | Workflow Handle
-$version = new \OpenAPI\Client\Model\\OpenAPI\Client\Model\GetPromptRevisionVersionParameter(); // \OpenAPI\Client\Model\GetPromptRevisionVersionParameter | Specific version or tag or id
-$CreateWorkflowRun = new \OpenAPI\Client\Model\CreateWorkflowRun(); // \OpenAPI\Client\Model\CreateWorkflowRun
+$version = new \PromptJuggler\Client\Model\\PromptJuggler\Client\Model\GetPromptRevisionVersionParameter(); // \PromptJuggler\Client\Model\GetPromptRevisionVersionParameter | Specific version or tag or id
+$CreateWorkflowRun = new \PromptJuggler\Client\Model\CreateWorkflowRun(); // \PromptJuggler\Client\Model\CreateWorkflowRun
 
 try {
     $result = $apiInstance->createWorkflowRun($slug, $version, $CreateWorkflowRun);
@@ -49,15 +49,15 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **slug** | **string**| Workflow Handle |
- **version** | **\OpenAPI\Client\Model\GetPromptRevisionVersionParameter**| Specific version or tag or id |
- **CreateWorkflowRun** | [**\OpenAPI\Client\Model\CreateWorkflowRun**](../Model/CreateWorkflowRun.md)|  |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **slug** | **string**| Workflow Handle | |
+| **version** | **\PromptJuggler\Client\Model\GetPromptRevisionVersionParameter**| Specific version or tag or id | |
+| **CreateWorkflowRun** | [**\PromptJuggler\Client\Model\CreateWorkflowRun**](../Model/CreateWorkflowRun.md)|  | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\CreateWorkflowRunResponse**](../Model/CreateWorkflowRunResponse.md)
+[**\PromptJuggler\Client\Model\CreateWorkflowRunResponse**](../Model/CreateWorkflowRunResponse.md)
 
 ### Authorization
 
@@ -75,7 +75,7 @@ Name | Type | Description  | Notes
 ## `getWorkflowRun()`
 
 ```php
-getWorkflowRun($id): \OpenAPI\Client\Model\WorkflowRun
+getWorkflowRun($id): \PromptJuggler\Client\Model\WorkflowRun
 ```
 
 Get a workflow run by ID
@@ -90,12 +90,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\WorkflowRunsApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\WorkflowRunsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -111,13 +111,13 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | **string**| Workflow run ID |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **string**| Workflow run ID | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\WorkflowRun**](../Model/WorkflowRun.md)
+[**\PromptJuggler\Client\Model\WorkflowRun**](../Model/WorkflowRun.md)
 
 ### Authorization
 

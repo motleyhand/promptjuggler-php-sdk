@@ -1,13 +1,13 @@
-# OpenAPI\Client\KnowledgeBasesApi
+# PromptJuggler\Client\KnowledgeBasesApi
 
-All URIs are relative to https://promptjuggler.com/api/v1.
+All URIs are relative to https://promptjuggler.com/api/v1, except if the operation defines another base path.
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**publicDeleteDocument()**](KnowledgeBasesApi.md#publicDeleteDocument) | **DELETE** /api/v1/knowledge-documents/{id} | Delete a knowledge document
-[**publicGetDocument()**](KnowledgeBasesApi.md#publicGetDocument) | **GET** /api/v1/knowledge-documents/{id} | Get a knowledge document by ID
-[**publicGetKnowledgeBase()**](KnowledgeBasesApi.md#publicGetKnowledgeBase) | **GET** /api/v1/knowledge-bases/{slug} | Get a knowledge base by slug
-[**publicUploadDocuments()**](KnowledgeBasesApi.md#publicUploadDocuments) | **POST** /api/v1/knowledge-bases/{slug}/documents | Upload documents to a knowledge base
+| Method | HTTP request | Description |
+| ------------- | ------------- | ------------- |
+| [**publicDeleteDocument()**](KnowledgeBasesApi.md#publicDeleteDocument) | **DELETE** /api/v1/knowledge-documents/{id} | Delete a knowledge document |
+| [**publicGetDocument()**](KnowledgeBasesApi.md#publicGetDocument) | **GET** /api/v1/knowledge-documents/{id} | Get a knowledge document by ID |
+| [**publicGetKnowledgeBase()**](KnowledgeBasesApi.md#publicGetKnowledgeBase) | **GET** /api/v1/knowledge-bases/{slug} | Get a knowledge base by slug |
+| [**publicUploadDocuments()**](KnowledgeBasesApi.md#publicUploadDocuments) | **POST** /api/v1/knowledge-bases/{slug}/documents | Upload documents to a knowledge base |
 
 
 ## `publicDeleteDocument()`
@@ -28,12 +28,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\KnowledgeBasesApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\KnowledgeBasesApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -48,9 +48,9 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | **string**| Document ID |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **string**| Document ID | |
 
 ### Return type
 
@@ -72,7 +72,7 @@ void (empty response body)
 ## `publicGetDocument()`
 
 ```php
-publicGetDocument($id): \OpenAPI\Client\Model\KnowledgeDocumentResponse
+publicGetDocument($id): \PromptJuggler\Client\Model\KnowledgeDocumentResponse
 ```
 
 Get a knowledge document by ID
@@ -87,12 +87,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\KnowledgeBasesApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\KnowledgeBasesApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -108,13 +108,13 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | **string**| Document ID |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **string**| Document ID | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\KnowledgeDocumentResponse**](../Model/KnowledgeDocumentResponse.md)
+[**\PromptJuggler\Client\Model\KnowledgeDocumentResponse**](../Model/KnowledgeDocumentResponse.md)
 
 ### Authorization
 
@@ -132,7 +132,7 @@ Name | Type | Description  | Notes
 ## `publicGetKnowledgeBase()`
 
 ```php
-publicGetKnowledgeBase($slug): \OpenAPI\Client\Model\KnowledgeBaseResponse
+publicGetKnowledgeBase($slug): \PromptJuggler\Client\Model\KnowledgeBaseResponse
 ```
 
 Get a knowledge base by slug
@@ -147,12 +147,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\KnowledgeBasesApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\KnowledgeBasesApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -168,13 +168,13 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **slug** | **string**| Knowledge base handle |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **slug** | **string**| Knowledge base handle | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\KnowledgeBaseResponse**](../Model/KnowledgeBaseResponse.md)
+[**\PromptJuggler\Client\Model\KnowledgeBaseResponse**](../Model/KnowledgeBaseResponse.md)
 
 ### Authorization
 
@@ -192,7 +192,7 @@ Name | Type | Description  | Notes
 ## `publicUploadDocuments()`
 
 ```php
-publicUploadDocuments($slug, $files): \OpenAPI\Client\Model\KnowledgeDocumentResponse[]
+publicUploadDocuments($slug, $files): \PromptJuggler\Client\Model\KnowledgeDocumentResponse[]
 ```
 
 Upload documents to a knowledge base
@@ -207,12 +207,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\KnowledgeBasesApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\KnowledgeBasesApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -229,14 +229,14 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **slug** | **string**| Knowledge base handle |
- **files** | **\SplFileObject[]**|  | [optional]
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **slug** | **string**| Knowledge base handle | |
+| **files** | **\SplFileObject[]**|  | [optional] |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\KnowledgeDocumentResponse[]**](../Model/KnowledgeDocumentResponse.md)
+[**\PromptJuggler\Client\Model\KnowledgeDocumentResponse[]**](../Model/KnowledgeDocumentResponse.md)
 
 ### Authorization
 

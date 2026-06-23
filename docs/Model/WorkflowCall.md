@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**versionRef** | [**\OpenAPI\Client\Model\VersionRef**](VersionRef.md) | Referencing the workflow revision either by id or version number or tag. |
+**versionRef** | [**\PromptJuggler\Client\Model\VersionRef**](VersionRef.md) | Referencing the workflow revision either by id or version number or tag. |
 **name** | **string** | The tool’s name. |
 **description** | **string** | The tool’s description. | [optional]
 **failFast** | **bool** | Whether to stop processing if a tool call fails. | [optional] [default to false]

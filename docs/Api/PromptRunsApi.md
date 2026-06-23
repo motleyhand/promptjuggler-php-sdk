@@ -1,17 +1,17 @@
-# OpenAPI\Client\PromptRunsApi
+# PromptJuggler\Client\PromptRunsApi
 
-All URIs are relative to https://promptjuggler.com/api/v1.
+All URIs are relative to https://promptjuggler.com/api/v1, except if the operation defines another base path.
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**createPromptRun()**](PromptRunsApi.md#createPromptRun) | **POST** /api/v1/prompts/{slug}/{version}/runs | Create and trigger a prompt run
-[**getPromptRun()**](PromptRunsApi.md#getPromptRun) | **GET** /api/v1/promptruns/{id} | Get a prompt run by ID
+| Method | HTTP request | Description |
+| ------------- | ------------- | ------------- |
+| [**createPromptRun()**](PromptRunsApi.md#createPromptRun) | **POST** /api/v1/prompts/{slug}/{version}/runs | Create and trigger a prompt run |
+| [**getPromptRun()**](PromptRunsApi.md#getPromptRun) | **GET** /api/v1/promptruns/{id} | Get a prompt run by ID |
 
 
 ## `createPromptRun()`
 
 ```php
-createPromptRun($slug, $version, $CreatePromptRun): \OpenAPI\Client\Model\CreatePromptRunResponse
+createPromptRun($slug, $version, $CreatePromptRun): \PromptJuggler\Client\Model\CreatePromptRunResponse
 ```
 
 Create and trigger a prompt run
@@ -26,18 +26,18 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\PromptRunsApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\PromptRunsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
 $slug = 'slug_example'; // string | Prompt Handle
-$version = new \OpenAPI\Client\Model\\OpenAPI\Client\Model\GetPromptRevisionVersionParameter(); // \OpenAPI\Client\Model\GetPromptRevisionVersionParameter | Specific version or tag or id
-$CreatePromptRun = new \OpenAPI\Client\Model\CreatePromptRun(); // \OpenAPI\Client\Model\CreatePromptRun
+$version = new \PromptJuggler\Client\Model\\PromptJuggler\Client\Model\GetPromptRevisionVersionParameter(); // \PromptJuggler\Client\Model\GetPromptRevisionVersionParameter | Specific version or tag or id
+$CreatePromptRun = new \PromptJuggler\Client\Model\CreatePromptRun(); // \PromptJuggler\Client\Model\CreatePromptRun
 
 try {
     $result = $apiInstance->createPromptRun($slug, $version, $CreatePromptRun);
@@ -49,15 +49,15 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **slug** | **string**| Prompt Handle |
- **version** | **\OpenAPI\Client\Model\GetPromptRevisionVersionParameter**| Specific version or tag or id |
- **CreatePromptRun** | [**\OpenAPI\Client\Model\CreatePromptRun**](../Model/CreatePromptRun.md)|  |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **slug** | **string**| Prompt Handle | |
+| **version** | **\PromptJuggler\Client\Model\GetPromptRevisionVersionParameter**| Specific version or tag or id | |
+| **CreatePromptRun** | [**\PromptJuggler\Client\Model\CreatePromptRun**](../Model/CreatePromptRun.md)|  | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\CreatePromptRunResponse**](../Model/CreatePromptRunResponse.md)
+[**\PromptJuggler\Client\Model\CreatePromptRunResponse**](../Model/CreatePromptRunResponse.md)
 
 ### Authorization
 
@@ -75,7 +75,7 @@ Name | Type | Description  | Notes
 ## `getPromptRun()`
 
 ```php
-getPromptRun($id): \OpenAPI\Client\Model\PromptRun
+getPromptRun($id): \PromptJuggler\Client\Model\PromptRun
 ```
 
 Get a prompt run by ID
@@ -90,12 +90,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure Bearer authorization: Bearer
-$config = OpenAPI\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+$config = PromptJuggler\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
 
 
-$apiInstance = new OpenAPI\Client\Api\PromptRunsApi(
-    // If you want use custom http client, pass your client which implements `Psr\Http\Client\ClientInterface`.
-    // This is optional, `Psr18ClientDiscovery` will be used to find http client. For instance `GuzzleHttp\Client` implements that interface
+$apiInstance = new PromptJuggler\Client\Api\PromptRunsApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
@@ -111,13 +111,13 @@ try {
 
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | **string**| Prompt run ID |
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **id** | **string**| Prompt run ID | |
 
 ### Return type
 
-[**\OpenAPI\Client\Model\PromptRun**](../Model/PromptRun.md)
+[**\PromptJuggler\Client\Model\PromptRun**](../Model/PromptRun.md)
 
 ### Authorization
 

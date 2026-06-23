@@ -10,6 +10,6 @@ Name | Type | Description | Notes
 **verbosity** | **string** | Verbosity. | [optional]
 **reasoningEffort** | **string** | Reasoning effort. | [optional]
 **reasoningSummary** | **bool** | Return reasoning summary. | [optional]
-**serviceTier** | [**\OpenAPI\Client\Model\ServiceTier**](ServiceTier.md) | Service tier. | [optional]
+**serviceTier** | [**\PromptJuggler\Client\Model\ServiceTier**](ServiceTier.md) | Service tier. | [optional]
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)
