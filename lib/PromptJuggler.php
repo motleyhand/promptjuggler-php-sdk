@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace PromptJuggler\Client;
 
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Psr7\MultipartStream;
 use Microsoft\Kiota\Abstractions\ApiException as KiotaApiException;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
+use Microsoft\Kiota\Abstractions\MultiPartBody;
+use Microsoft\Kiota\Abstractions\RequestAdapter;
 use Microsoft\Kiota\Http\GuzzleRequestAdapter;
 use PromptJuggler\Client\Auth\StaticAccessTokenProvider;
 use PromptJuggler\Client\Exception\ApiException;
@@ -35,13 +38,14 @@ use PromptJuggler\Client\Models\WorkflowRun;
  */
 final class PromptJuggler
 {
+    private readonly RequestAdapter $adapter;
     private readonly PromptJugglerClient $client;
 
     public function __construct(string $apiKey, ?ClientInterface $httpClient = null)
     {
         $authProvider = new BaseBearerTokenAuthenticationProvider(new StaticAccessTokenProvider($apiKey));
-        $adapter = new GuzzleRequestAdapter($authProvider, null, null, $httpClient);
-        $this->client = new PromptJugglerClient($adapter);
+        $this->adapter = new GuzzleRequestAdapter($authProvider, null, null, $httpClient);
+        $this->client = new PromptJugglerClient($this->adapter);
     }
 
     public function getPrompt(string $slug, int|string $version): PromptRevision
@@ -164,6 +168,39 @@ final class PromptJuggler
     public function deleteKnowledgeDocument(string $id): void
     {
         $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
+    }
+
+    /**
+     * @param array<string, string> $files filename => raw file contents
+     *
+     * @return list<KnowledgeDocumentResponse>
+     */
+    public function uploadDocuments(string $slug, array $files): array
+    {
+        $index = 0;
+        $parts = [];
+        foreach ($files as $filename => $contents) {
+            $parts[] = ['name' => "files[{$index}]", 'filename' => $filename, 'contents' => $contents];
+            ++$index;
+        }
+        $multipart = new MultipartStream($parts);
+
+        // Kiota's MultiPartBody can't set per-part filenames, but this endpoint needs
+        // them (the server reads getClientOriginalName). Build the multipart body with
+        // Guzzle and inject it into the request the generated builder would have sent.
+        $requestInfo = $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->documents()
+            ->toPostRequestInformation(new MultiPartBody());
+        $requestInfo->content = $multipart;
+        $requestInfo->setHeaders([
+            'Accept' => 'application/json',
+            'Content-Type' => 'multipart/form-data; boundary=' . $multipart->getBoundary(),
+        ]);
+
+        return $this->send(fn () => $this->adapter->sendCollectionAsync(
+            $requestInfo,
+            [KnowledgeDocumentResponse::class, 'createFromDiscriminatorValue'],
+            ['403' => [ErrorResponse::class, 'createFromDiscriminatorValue']],
+        )->wait());
     }
 
     /**
