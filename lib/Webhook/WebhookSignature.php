@@ -43,9 +43,9 @@ final class WebhookSignature
     {
         $fields = [];
         foreach (explode(',', $header) as $segment) {
-            [$key, $value] = array_pad(explode('=', $segment, 2), 2, null);
-            if ($value !== null) {
-                $fields[$key] = $value;
+            $pair = explode('=', $segment, 2);
+            if (count($pair) === 2) {
+                $fields[$pair[0]] = $pair[1];
             }
         }
 

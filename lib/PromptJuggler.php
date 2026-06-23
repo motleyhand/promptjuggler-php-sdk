@@ -167,7 +167,7 @@ final class PromptJuggler
 
     public function deleteKnowledgeDocument(string $id): void
     {
-        $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
+        $this->sendVoid(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
     }
 
     /**
@@ -196,33 +196,58 @@ final class PromptJuggler
             'Content-Type' => 'multipart/form-data; boundary=' . $multipart->getBoundary(),
         ]);
 
-        return $this->send(fn () => $this->adapter->sendCollectionAsync(
+        return array_values($this->send(fn () => $this->adapter->sendCollectionAsync(
             $requestInfo,
             [KnowledgeDocumentResponse::class, 'createFromDiscriminatorValue'],
-            ['403' => [ErrorResponse::class, 'createFromDiscriminatorValue']],
-        )->wait());
+            ['4XX' => [ErrorResponse::class, 'createFromDiscriminatorValue'], '5XX' => [ErrorResponse::class, 'createFromDiscriminatorValue']],
+        )->wait()));
     }
 
     /**
-     * Run the request and translate Kiota's API exception into the SDK's own, so
-     * callers never see a Microsoft\Kiota type.
+     * Run a request that returns a value, translating Kiota's exception into the
+     * SDK's own and guaranteeing a non-null result for the caller.
      *
      * @template T
      *
-     * @param callable(): T $request
+     * @param callable(): (T|null) $request
      *
      * @return T
      */
     private function send(callable $request): mixed
     {
         try {
-            return $request();
+            $result = $request();
         } catch (KiotaApiException $e) {
-            $message = $e instanceof ErrorResponse && $e->getError() !== null
-                ? $e->getError()
-                : $e->getMessage();
-
-            throw new ApiException($message, $e->getResponseStatusCode(), $e);
+            throw $this->translate($e);
         }
+
+        if ($result === null) {
+            throw new ApiException('The API returned an empty response.', null);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Run a request with no response body (e.g. DELETE), translating errors.
+     *
+     * @param callable(): mixed $request
+     */
+    private function sendVoid(callable $request): void
+    {
+        try {
+            $request();
+        } catch (KiotaApiException $e) {
+            throw $this->translate($e);
+        }
+    }
+
+    private function translate(KiotaApiException $e): ApiException
+    {
+        $message = $e instanceof ErrorResponse && $e->getError() !== null
+            ? $e->getError()
+            : $e->getMessage();
+
+        return new ApiException($message, $e->getResponseStatusCode(), $e);
     }
 }
