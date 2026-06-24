@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PromptJuggler\Client\Api\V1\Promptruns;
 
 use Microsoft\Kiota\Abstractions\BaseRequestBuilder;
@@ -8,32 +10,33 @@ use PromptJuggler\Client\Api\V1\Promptruns\Item\PromptrunsItemRequestBuilder;
 
 /**
  * Builds and executes requests for operations under /api/v1/promptruns
-*/
-class PromptrunsRequestBuilder extends BaseRequestBuilder 
+ */
+class PromptrunsRequestBuilder extends BaseRequestBuilder
 {
-    /**
-     * Gets an item from the PromptJuggler/Client.api.v1.promptruns.item collection
-     * @param string $id Prompt run ID
-     * @return PromptrunsItemRequestBuilder
-    */
-    public function byId(string $id): PromptrunsItemRequestBuilder {
-        $urlTplParams = $this->pathParameters;
-        $urlTplParams['id'] = $id;
-        return new PromptrunsItemRequestBuilder($urlTplParams, $this->requestAdapter);
-    }
-
     /**
      * Instantiates a new PromptrunsRequestBuilder and sets the default values.
      * @param array<string, mixed>|string $pathParametersOrRawUrl Path parameters for the request or a String representing the raw URL.
      * @param RequestAdapter $requestAdapter The request adapter to use to execute the requests.
-    */
-    public function __construct($pathParametersOrRawUrl, RequestAdapter $requestAdapter) {
+     */
+    public function __construct($pathParametersOrRawUrl, RequestAdapter $requestAdapter)
+    {
         parent::__construct($requestAdapter, [], '{+baseurl}/api/v1/promptruns');
-        if (is_array($pathParametersOrRawUrl)) {
+        if (\is_array($pathParametersOrRawUrl)) {
             $this->pathParameters = $pathParametersOrRawUrl;
         } else {
             $this->pathParameters = ['request-raw-url' => $pathParametersOrRawUrl];
         }
     }
 
+    /**
+     * Gets an item from the PromptJuggler/Client.api.v1.promptruns.item collection
+     * @param string $id Prompt run ID
+     */
+    public function byId(string $id): PromptrunsItemRequestBuilder
+    {
+        $urlTplParams = $this->pathParameters;
+        $urlTplParams['id'] = $id;
+
+        return new PromptrunsItemRequestBuilder($urlTplParams, $this->requestAdapter);
+    }
 }

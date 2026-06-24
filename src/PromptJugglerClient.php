@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace PromptJuggler\Client;
 
 use Microsoft\Kiota\Abstractions\ApiClientBuilder;
@@ -16,21 +18,15 @@ use PromptJuggler\Client\Api\ApiRequestBuilder;
 
 /**
  * The main entry point of the SDK, exposes the configuration and the fluent API.
-*/
-class PromptJugglerClient extends BaseRequestBuilder 
+ */
+class PromptJugglerClient extends BaseRequestBuilder
 {
-    /**
-     * The api property
-    */
-    public function api(): ApiRequestBuilder {
-        return new ApiRequestBuilder($this->pathParameters, $this->requestAdapter);
-    }
-    
     /**
      * Instantiates a new PromptJugglerClient and sets the default values.
      * @param RequestAdapter $requestAdapter The request adapter to use to execute the requests.
-    */
-    public function __construct(RequestAdapter $requestAdapter) {
+     */
+    public function __construct(RequestAdapter $requestAdapter)
+    {
         parent::__construct($requestAdapter, [], '{+baseurl}');
         ApiClientBuilder::registerDefaultSerializer(JsonSerializationWriterFactory::class);
         ApiClientBuilder::registerDefaultSerializer(TextSerializationWriterFactory::class);
@@ -45,4 +41,11 @@ class PromptJugglerClient extends BaseRequestBuilder
         $this->pathParameters['baseurl'] = $this->requestAdapter->getBaseUrl();
     }
 
+    /**
+     * The api property
+     */
+    public function api(): ApiRequestBuilder
+    {
+        return new ApiRequestBuilder($this->pathParameters, $this->requestAdapter);
+    }
 }

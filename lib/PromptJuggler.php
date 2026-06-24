@@ -50,7 +50,9 @@ final class PromptJuggler
 
     public function getPrompt(string $slug, int|string $version): PromptRevision
     {
-        return $this->send(fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->get()->wait());
+        return $this->send(
+            fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->get()->wait(),
+        );
     }
 
     /**
@@ -98,7 +100,11 @@ final class PromptJuggler
             $body->setChannel($channel);
         }
 
-        return $this->send(fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait());
+        return $this->send(
+            fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->runs()->post(
+                $body,
+            )->wait(),
+        );
     }
 
     public function getPromptRun(string $id): PromptRun
@@ -147,7 +153,11 @@ final class PromptJuggler
             $body->setMetadata($metadataModel);
         }
 
-        return $this->send(fn () => $this->client->api()->v1()->workflows()->bySlug($slug)->byVersion((string) $version)->runs()->post($body)->wait());
+        return $this->send(
+            fn () => $this->client->api()->v1()->workflows()->bySlug($slug)->byVersion((string) $version)->runs()->post(
+                $body,
+            )->wait(),
+        );
     }
 
     public function getWorkflowRun(string $id): WorkflowRun
@@ -189,7 +199,8 @@ final class PromptJuggler
         // them (the server reads getClientOriginalName). Build the multipart body with
         // Guzzle and inject it into the request the generated builder would have sent.
         $requestInfo = $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->documents()
-            ->toPostRequestInformation(new MultiPartBody());
+            ->toPostRequestInformation(new MultiPartBody())
+        ;
         $requestInfo->content = $multipart;
         $requestInfo->setHeaders([
             'Accept' => 'application/json',
@@ -199,7 +210,10 @@ final class PromptJuggler
         return array_values($this->send(fn () => $this->adapter->sendCollectionAsync(
             $requestInfo,
             [KnowledgeDocumentResponse::class, 'createFromDiscriminatorValue'],
-            ['4XX' => [ErrorResponse::class, 'createFromDiscriminatorValue'], '5XX' => [ErrorResponse::class, 'createFromDiscriminatorValue']],
+            ['4XX' => [ErrorResponse::class, 'createFromDiscriminatorValue'], '5XX' => [
+                ErrorResponse::class,
+                'createFromDiscriminatorValue',
+            ]],
         )->wait()));
     }
 

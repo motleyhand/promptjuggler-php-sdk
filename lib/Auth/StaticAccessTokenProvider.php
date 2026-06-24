@@ -17,8 +17,9 @@ final class StaticAccessTokenProvider implements AccessTokenProvider
 {
     private readonly AllowedHostsValidator $allowedHostsValidator;
 
-    public function __construct(private readonly string $accessToken)
-    {
+    public function __construct(
+        private readonly string $accessToken,
+    ) {
         $this->allowedHostsValidator = new AllowedHostsValidator(['promptjuggler.com']);
     }
 
