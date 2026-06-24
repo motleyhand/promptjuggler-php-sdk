@@ -8,7 +8,7 @@
   "clientNamespaceName": "PromptJuggler\\Client",
   "language": "PHP",
   "usesBackingStore": false,
-  "excludeBackwardCompatible": false,
+  "excludeBackwardCompatible": true,
   "includeAdditionalData": true,
   "disableSSLValidation": false,
   "serializers": [
