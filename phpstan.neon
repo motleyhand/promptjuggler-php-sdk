@@ -1,0 +1,32 @@
+includes:
+	- vendor/phpstan/phpstan/conf/bleedingEdge.neon
+parameters:
+    level: max
+    polluteScopeWithLoopInitialAssignments: false
+    polluteScopeWithAlwaysIterableForeach: false
+    checkExplicitMixedMissingReturn: true
+    checkFunctionNameCase: true
+    checkInternalClassCaseSensitivity: true
+    reportMaybesInPropertyPhpDocTypes: true
+    reportStaticMethodSignatures: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    checkDynamicProperties: true
+    checkImplicitMixed: true
+    checkBenevolentUnionTypes: true
+    reportWrongPhpDocTypeInVarTag: true
+    rememberPossiblyImpureFunctionValues: true
+    checkMissingCallableSignature: true
+    resultCachePath: %tmpDir%/resultCache-src.php
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - RuntimeException
+            - LogicException
+            - ReflectionException
+            - RandomException
+            - TypeError
+            - ValueError
+    paths:
+        - lib
