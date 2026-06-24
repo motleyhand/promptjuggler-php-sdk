@@ -9,7 +9,7 @@
     },
     "require-dev": {
         "phpstan/phpstan": "^2.2.2",
-        "phpunit/phpunit": "^12.5.30",
+        "phpunit/phpunit": "^11.5",
         "motley/ecs-config": "^3.0.2"
     },
     "autoload": {
