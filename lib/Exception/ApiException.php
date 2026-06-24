@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Exception;
 
-use RuntimeException;
+use Exception;
 use Throwable;
 
 /**
  * Thrown when the API responds with an error status. Carries the HTTP status code
  * and the server's error message; the original Kiota exception is the `previous`.
  */
-final class ApiException extends RuntimeException implements PromptJugglerException
+final class ApiException extends Exception implements PromptJugglerException
 {
     public function __construct(
         string $message,

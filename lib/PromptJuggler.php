@@ -48,6 +48,9 @@ final class PromptJuggler
         $this->client = new PromptJugglerClient($this->adapter);
     }
 
+    /**
+     * @throws ApiException
+     */
     public function getPrompt(string $slug, int|string $version): PromptRevision
     {
         return $this->send(
@@ -56,9 +59,10 @@ final class PromptJuggler
     }
 
     /**
-     * @param array<string, string>               $inputs
-     * @param array<string, string>|null          $envVars
+     * @param array<string, string> $inputs
+     * @param array<string, string>|null $envVars
      * @param array<string, string|string[]>|null $metadata
+     * @throws ApiException
      */
     public function runPrompt(
         string $slug,
@@ -107,15 +111,19 @@ final class PromptJuggler
         );
     }
 
+    /**
+     * @throws ApiException
+     */
     public function getPromptRun(string $id): PromptRun
     {
         return $this->send(fn () => $this->client->api()->v1()->promptruns()->byId($id)->get()->wait());
     }
 
     /**
-     * @param array<string, string>               $inputs
-     * @param array<string, string>|null          $envVars
+     * @param array<string, string> $inputs
+     * @param array<string, string>|null $envVars
      * @param array<string, string|string[]>|null $metadata
+     * @throws ApiException
      */
     public function runWorkflow(
         string $slug,
@@ -160,21 +168,33 @@ final class PromptJuggler
         );
     }
 
+    /**
+     * @throws ApiException
+     */
     public function getWorkflowRun(string $id): WorkflowRun
     {
         return $this->send(fn () => $this->client->api()->v1()->workflowruns()->byId($id)->get()->wait());
     }
 
+    /**
+     * @throws ApiException
+     */
     public function getKnowledgeBase(string $slug): KnowledgeBaseResponse
     {
         return $this->send(fn () => $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->get()->wait());
     }
 
+    /**
+     * @throws ApiException
+     */
     public function getKnowledgeDocument(string $id): KnowledgeDocumentResponse
     {
         return $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->get()->wait());
     }
 
+    /**
+     * @throws ApiException
+     */
     public function deleteKnowledgeDocument(string $id): void
     {
         $this->sendVoid(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
@@ -182,8 +202,8 @@ final class PromptJuggler
 
     /**
      * @param array<string, string> $files filename => raw file contents
-     *
      * @return list<KnowledgeDocumentResponse>
+     * @throws ApiException
      */
     public function uploadDocuments(string $slug, array $files): array
     {
@@ -199,6 +219,7 @@ final class PromptJuggler
         // them (the server reads getClientOriginalName). Build the multipart body with
         // Guzzle and inject it into the request the generated builder would have sent.
         $requestInfo = $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->documents()
+            // @phpstan-ignore missingType.checkedException (Kiota bug: MultiPartBody::__construct's @throws Exception is really RandomException from random_bytes)
             ->toPostRequestInformation(new MultiPartBody())
         ;
         $requestInfo->content = $multipart;
@@ -222,10 +243,9 @@ final class PromptJuggler
      * SDK's own and guaranteeing a non-null result for the caller.
      *
      * @template T
-     *
      * @param callable(): (T|null) $request
-     *
      * @return T
+     * @throws ApiException
      */
     private function send(callable $request): mixed
     {
@@ -246,6 +266,7 @@ final class PromptJuggler
      * Run a request with no response body (e.g. DELETE), translating errors.
      *
      * @param callable(): mixed $request
+     * @throws ApiException
      */
     private function sendVoid(callable $request): void
     {
