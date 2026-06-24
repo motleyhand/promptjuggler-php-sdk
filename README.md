@@ -1,11 +1,8 @@
 # PromptJuggler PHP SDK
 
-A typed PHP client for the [PromptJuggler](https://promptjuggler.com) API — run
-prompts and workflows, manage knowledge bases, and verify webhooks.
-
-> Generated with [Kiota](https://learn.microsoft.com/openapi/kiota/) and fronted by
-> a hand-written facade. **Do not edit `src/`** — it is regenerated from the OpenAPI
-> spec. The public API lives in `lib/`.
+The official PHP client for the [PromptJuggler](https://promptjuggler.com) API. Run
+prompts and workflows, manage knowledge bases, and verify webhooks — fully typed, with
+flat, synchronous methods.
 
 ## Requirements
 
