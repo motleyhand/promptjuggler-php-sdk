@@ -34,7 +34,7 @@ class WorkflowrunsItemRequestBuilder extends BaseRequestBuilder
     }
 
     /**
-     * Retrieves the current state of a workflow run, including status, outputs, and errors. Poll this endpoint after receiving a webhook notification, or use it to check the status of a run in progress.
+     * Retrieves the current state of a workflow run, including status, outputs, aggregated token usage, cost, and errors. Poll this endpoint after receiving a webhook notification, or use it to check the status of a run in progress.
      * @param WorkflowrunsItemRequestBuilderGetRequestConfiguration|null $requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      * @return Promise<WorkflowRun|null>
      * @throws Exception
@@ -54,7 +54,7 @@ class WorkflowrunsItemRequestBuilder extends BaseRequestBuilder
     }
 
     /**
-     * Retrieves the current state of a workflow run, including status, outputs, and errors. Poll this endpoint after receiving a webhook notification, or use it to check the status of a run in progress.
+     * Retrieves the current state of a workflow run, including status, outputs, aggregated token usage, cost, and errors. Poll this endpoint after receiving a webhook notification, or use it to check the status of a run in progress.
      * @param WorkflowrunsItemRequestBuilderGetRequestConfiguration|null $requestConfiguration Configuration for the request such as headers, query parameters, and middleware options.
      */
     public function toGetRequestInformation(

@@ -22,6 +22,11 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     private ?array $additionalData = null;
     
     /**
+     * @var WorkflowRun_cost|null $cost Aggregated cost breakdown across the workflow run. Null while pending.
+     */
+    private ?WorkflowRun_cost $cost = null;
+    
+    /**
      * @var DateTime|null $createdAt Timestamp when the run was created.
      */
     private ?DateTime $createdAt = null;
@@ -52,6 +57,11 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     private ?RunStatus $status = null;
     
     /**
+     * @var WorkflowRun_tokenUsage|null $tokenUsage Aggregated token usage across the workflow run. Null while pending.
+     */
+    private ?WorkflowRun_tokenUsage $tokenUsage = null;
+    
+    /**
      * Instantiates a new WorkflowRun and sets the default values.
      */
     public function __construct()
@@ -75,6 +85,14 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     public function getAdditionalData(): ?array
     {
         return $this->additionalData;
+    }
+
+    /**
+     * Gets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending.
+     */
+    public function getCost(): ?WorkflowRun_cost
+    {
+        return $this->cost;
     }
 
     /**
@@ -103,6 +121,9 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
         $o = $this;
 
         return [
+            'cost' => static fn (ParseNode $n) => $o->setCost(
+                $n->getObjectValue([WorkflowRun_cost::class, 'createFromDiscriminatorValue']),
+            ),
             'createdAt' => static fn (ParseNode $n) => $o->setCreatedAt($n->getDateTimeValue()),
             'errors' => function (ParseNode $n) {
                 $val = $n->getCollectionOfPrimitiveValues();
@@ -118,6 +139,9 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
                 $n->getObjectValue([WorkflowRun_outputs::class, 'createFromDiscriminatorValue']),
             ),
             'status' => static fn (ParseNode $n) => $o->setStatus($n->getEnumValue(RunStatus::class)),
+            'tokenUsage' => static fn (ParseNode $n) => $o->setTokenUsage(
+                $n->getObjectValue([WorkflowRun_tokenUsage::class, 'createFromDiscriminatorValue']),
+            ),
         ];
     }
 
@@ -154,17 +178,27 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the tokenUsage property value. Aggregated token usage across the workflow run. Null while pending.
+     */
+    public function getTokenUsage(): ?WorkflowRun_tokenUsage
+    {
+        return $this->tokenUsage;
+    }
+
+    /**
      * Serializes information the current object
      * @param SerializationWriter $writer Serialization writer to use to serialize this model
      */
     public function serialize(SerializationWriter $writer): void
     {
+        $writer->writeObjectValue('cost', $this->getCost());
         $writer->writeDateTimeValue('createdAt', $this->getCreatedAt());
         $writer->writeCollectionOfPrimitiveValues('errors', $this->getErrors());
         $writer->writeDateTimeValue('finishedAt', $this->getFinishedAt());
         $writer->writeStringValue('id', $this->getId());
         $writer->writeObjectValue('outputs', $this->getOutputs());
         $writer->writeEnumValue('status', $this->getStatus());
+        $writer->writeObjectValue('tokenUsage', $this->getTokenUsage());
         $writer->writeAdditionalData($this->getAdditionalData());
     }
 
@@ -175,6 +209,15 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     public function setAdditionalData(?array $value): void
     {
         $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending.
+     * @param WorkflowRun_cost|null $value Value to set for the cost property.
+     */
+    public function setCost(?WorkflowRun_cost $value): void
+    {
+        $this->cost = $value;
     }
 
     /**
@@ -229,5 +272,14 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     public function setStatus(?RunStatus $value): void
     {
         $this->status = $value;
+    }
+
+    /**
+     * Sets the tokenUsage property value. Aggregated token usage across the workflow run. Null while pending.
+     * @param WorkflowRun_tokenUsage|null $value Value to set for the tokenUsage property.
+     */
+    public function setTokenUsage(?WorkflowRun_tokenUsage $value): void
+    {
+        $this->tokenUsage = $value;
     }
 }

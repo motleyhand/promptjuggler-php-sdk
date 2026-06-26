@@ -21,6 +21,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?array $additionalData = null;
     
     /**
+     * @var PromptRun_cost|null $cost Cost breakdown for the run. Null while pending.
+     */
+    private ?PromptRun_cost $cost = null;
+    
+    /**
      * @var DateTime|null $createdAt Timestamp when the run was created.
      */
     private ?DateTime $createdAt = null;
@@ -51,6 +56,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?RunStatus $status = null;
     
     /**
+     * @var PromptRun_tokenUsage|null $tokenUsage Token usage for the successful run. Null while pending or when the run failed.
+     */
+    private ?PromptRun_tokenUsage $tokenUsage = null;
+    
+    /**
      * Instantiates a new PromptRun and sets the default values.
      */
     public function __construct()
@@ -74,6 +84,14 @@ class PromptRun implements AdditionalDataHolder, Parsable
     public function getAdditionalData(): ?array
     {
         return $this->additionalData;
+    }
+
+    /**
+     * Gets the cost property value. Cost breakdown for the run. Null while pending.
+     */
+    public function getCost(): ?PromptRun_cost
+    {
+        return $this->cost;
     }
 
     /**
@@ -101,12 +119,18 @@ class PromptRun implements AdditionalDataHolder, Parsable
         $o = $this;
 
         return [
+            'cost' => static fn (ParseNode $n) => $o->setCost(
+                $n->getObjectValue([PromptRun_cost::class, 'createFromDiscriminatorValue']),
+            ),
             'createdAt' => static fn (ParseNode $n) => $o->setCreatedAt($n->getDateTimeValue()),
             'error' => static fn (ParseNode $n) => $o->setError($n->getStringValue()),
             'finishedAt' => static fn (ParseNode $n) => $o->setFinishedAt($n->getDateTimeValue()),
             'id' => static fn (ParseNode $n) => $o->setId($n->getStringValue()),
             'output' => static fn (ParseNode $n) => $o->setOutput($n->getStringValue()),
             'status' => static fn (ParseNode $n) => $o->setStatus($n->getEnumValue(RunStatus::class)),
+            'tokenUsage' => static fn (ParseNode $n) => $o->setTokenUsage(
+                $n->getObjectValue([PromptRun_tokenUsage::class, 'createFromDiscriminatorValue']),
+            ),
         ];
     }
 
@@ -143,17 +167,27 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the tokenUsage property value. Token usage for the successful run. Null while pending or when the run failed.
+     */
+    public function getTokenUsage(): ?PromptRun_tokenUsage
+    {
+        return $this->tokenUsage;
+    }
+
+    /**
      * Serializes information the current object
      * @param SerializationWriter $writer Serialization writer to use to serialize this model
      */
     public function serialize(SerializationWriter $writer): void
     {
+        $writer->writeObjectValue('cost', $this->getCost());
         $writer->writeDateTimeValue('createdAt', $this->getCreatedAt());
         $writer->writeStringValue('error', $this->getError());
         $writer->writeDateTimeValue('finishedAt', $this->getFinishedAt());
         $writer->writeStringValue('id', $this->getId());
         $writer->writeStringValue('output', $this->getOutput());
         $writer->writeEnumValue('status', $this->getStatus());
+        $writer->writeObjectValue('tokenUsage', $this->getTokenUsage());
         $writer->writeAdditionalData($this->getAdditionalData());
     }
 
@@ -164,6 +198,15 @@ class PromptRun implements AdditionalDataHolder, Parsable
     public function setAdditionalData(?array $value): void
     {
         $this->additionalData = $value;
+    }
+
+    /**
+     * Sets the cost property value. Cost breakdown for the run. Null while pending.
+     * @param PromptRun_cost|null $value Value to set for the cost property.
+     */
+    public function setCost(?PromptRun_cost $value): void
+    {
+        $this->cost = $value;
     }
 
     /**
@@ -218,5 +261,14 @@ class PromptRun implements AdditionalDataHolder, Parsable
     public function setStatus(?RunStatus $value): void
     {
         $this->status = $value;
+    }
+
+    /**
+     * Sets the tokenUsage property value. Token usage for the successful run. Null while pending or when the run failed.
+     * @param PromptRun_tokenUsage|null $value Value to set for the tokenUsage property.
+     */
+    public function setTokenUsage(?PromptRun_tokenUsage $value): void
+    {
+        $this->tokenUsage = $value;
     }
 }
