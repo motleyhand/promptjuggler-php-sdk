@@ -47,7 +47,6 @@ class ModelCost implements AdditionalDataHolder, Parsable
     public function __construct()
     {
         $this->setAdditionalData([]);
-        $this->setWebSearch(0);
     }
 
     /**
