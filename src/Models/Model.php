@@ -28,10 +28,12 @@ class Model extends Enum
     public const GEMINI25_PRO = 'gemini-2.5-pro';
     public const GEMINI25_FLASH = 'gemini-2.5-flash';
     public const GEMINI25_FLASH_LITE = 'gemini-2.5-flash-lite';
+    public const CLAUDE_FABLE5 = 'claude-fable-5';
     public const CLAUDE_OPUS48 = 'claude-opus-4-8';
     public const CLAUDE_OPUS47 = 'claude-opus-4-7';
     public const CLAUDE_OPUS46 = 'claude-opus-4-6';
     public const CLAUDE_OPUS45 = 'claude-opus-4-5';
+    public const CLAUDE_SONNET5 = 'claude-sonnet-5';
     public const CLAUDE_SONNET46 = 'claude-sonnet-4-6';
     public const CLAUDE_SONNET45 = 'claude-sonnet-4-5';
     public const CLAUDE_HAIKU45 = 'claude-haiku-4-5';
