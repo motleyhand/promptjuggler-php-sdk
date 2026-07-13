@@ -8,6 +8,9 @@ use Microsoft\Kiota\Abstractions\Enum;
 
 class Model extends Enum
 {
+    public const GPT56_SOL = 'gpt-5.6-sol';
+    public const GPT56_TERRA = 'gpt-5.6-terra';
+    public const GPT56_LUNA = 'gpt-5.6-luna';
     public const GPT55 = 'gpt-5.5';
     public const GPT55_PRO = 'gpt-5.5-pro';
     public const GPT54 = 'gpt-5.4';
