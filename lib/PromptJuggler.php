@@ -30,6 +30,7 @@ use PromptJuggler\Client\Models\KnowledgeBaseResponse;
 use PromptJuggler\Client\Models\KnowledgeDocumentResponse;
 use PromptJuggler\Client\Models\PromptRevision;
 use PromptJuggler\Client\Models\PromptRun;
+use PromptJuggler\Client\Models\StreamTokenResponse;
 use PromptJuggler\Client\Models\WorkflowRun;
 
 /**
@@ -174,6 +175,22 @@ final class PromptJuggler
     public function getWorkflowRun(string $id): WorkflowRun
     {
         return $this->send(fn () => $this->client->api()->v1()->workflowruns()->byId($id)->get()->wait());
+    }
+
+    /**
+     * Mint a short-lived, thread-scoped credential for the streaming endpoint. Call this from your
+     * server and hand the result to the browser -- the API key must never reach it. The response
+     * carries the fully-resolved SSE URL alongside the token, so clients need no host config.
+     *
+     * Connect before triggering a run: tokens emitted while nobody is subscribed are not replayed.
+     *
+     * @throws ApiException
+     */
+    public function createStreamToken(string $thread): StreamTokenResponse
+    {
+        return $this->send(
+            fn () => $this->client->api()->v1()->threads()->byThread($thread)->streamToken()->post()->wait(),
+        );
     }
 
     /**
