@@ -10,6 +10,7 @@ use PromptJuggler\Client\Api\V1\KnowledgeBases\KnowledgeBasesRequestBuilder;
 use PromptJuggler\Client\Api\V1\KnowledgeDocuments\KnowledgeDocumentsRequestBuilder;
 use PromptJuggler\Client\Api\V1\Promptruns\PromptrunsRequestBuilder;
 use PromptJuggler\Client\Api\V1\Prompts\PromptsRequestBuilder;
+use PromptJuggler\Client\Api\V1\Threads\ThreadsRequestBuilder;
 use PromptJuggler\Client\Api\V1\Workflowruns\WorkflowrunsRequestBuilder;
 use PromptJuggler\Client\Api\V1\Workflows\WorkflowsRequestBuilder;
 
@@ -63,6 +64,14 @@ class V1RequestBuilder extends BaseRequestBuilder
     public function prompts(): PromptsRequestBuilder
     {
         return new PromptsRequestBuilder($this->pathParameters, $this->requestAdapter);
+    }
+    
+    /**
+     * The threads property
+     */
+    public function threads(): ThreadsRequestBuilder
+    {
+        return new ThreadsRequestBuilder($this->pathParameters, $this->requestAdapter);
     }
     
     /**
