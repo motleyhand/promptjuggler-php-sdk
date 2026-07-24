@@ -10,10 +10,15 @@ use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 
 /**
- * Composed type wrapper for classes HttpCall, KnowledgeSearch, Mcp, PromptCall, ScriptCall, WebSearch, WorkflowCall
+ * Composed type wrapper for classes Emit, HttpCall, KnowledgeSearch, Mcp, PromptCall, ScriptCall, WebSearch, WorkflowCall
  */
 class Tool implements ComposedTypeWrapper, Parsable
 {
+    /**
+     * @var Emit|null $emit Composed type representation for type Emit
+     */
+    private ?Emit $emit = null;
+    
     /**
      * @var HttpCall|null $httpCall Composed type representation for type HttpCall
      */
@@ -59,7 +64,9 @@ class Tool implements ComposedTypeWrapper, Parsable
         $mappingValueNode = $parseNode->getChildNode('type');
         if ($mappingValueNode !== null) {
             $mappingValue = $mappingValueNode->getStringValue();
-            if ('http' === $mappingValue) {
+            if ('emit' === $mappingValue) {
+                $result->setEmit(new Emit());
+            } elseif ('http' === $mappingValue) {
                 $result->setHttpCall(new HttpCall());
             } elseif ('knowledge_search' === $mappingValue) {
                 $result->setKnowledgeSearch(new KnowledgeSearch());
@@ -80,12 +87,22 @@ class Tool implements ComposedTypeWrapper, Parsable
     }
 
     /**
+     * Gets the Emit property value. Composed type representation for type Emit
+     */
+    public function getEmit(): ?Emit
+    {
+        return $this->emit;
+    }
+
+    /**
      * The deserialization information for the current model
      * @return array<string, callable(ParseNode): void>
      */
     public function getFieldDeserializers(): array
     {
-        if ($this->getHttpCall() !== null) {
+        if ($this->getEmit() !== null) {
+            return $this->getEmit()->getFieldDeserializers();
+        } elseif ($this->getHttpCall() !== null) {
             return $this->getHttpCall()->getFieldDeserializers();
         } elseif ($this->getKnowledgeSearch() !== null) {
             return $this->getKnowledgeSearch()->getFieldDeserializers();
@@ -166,7 +183,9 @@ class Tool implements ComposedTypeWrapper, Parsable
      */
     public function serialize(SerializationWriter $writer): void
     {
-        if ($this->getHttpCall() !== null) {
+        if ($this->getEmit() !== null) {
+            $writer->writeObjectValue(null, $this->getEmit());
+        } elseif ($this->getHttpCall() !== null) {
             $writer->writeObjectValue(null, $this->getHttpCall());
         } elseif ($this->getKnowledgeSearch() !== null) {
             $writer->writeObjectValue(null, $this->getKnowledgeSearch());
@@ -181,6 +200,15 @@ class Tool implements ComposedTypeWrapper, Parsable
         } elseif ($this->getWorkflowCall() !== null) {
             $writer->writeObjectValue(null, $this->getWorkflowCall());
         }
+    }
+
+    /**
+     * Sets the Emit property value. Composed type representation for type Emit
+     * @param Emit|null $value Value to set for the Emit property.
+     */
+    public function setEmit(?Emit $value): void
+    {
+        $this->emit = $value;
     }
 
     /**

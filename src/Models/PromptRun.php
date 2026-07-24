@@ -31,6 +31,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?DateTime $createdAt = null;
     
     /**
+     * @var array<EmittedItem>|null $emitted Payloads produced by emit tools during this run, in call order. Empty until the run completes.
+     */
+    private ?array $emitted = null;
+    
+    /**
      * @var string|null $error Error message if the run failed. Null on success.
      */
     private ?string $error = null;
@@ -103,6 +108,15 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the emitted property value. Payloads produced by emit tools during this run, in call order. Empty until the run completes.
+     * @return array<EmittedItem>|null
+     */
+    public function getEmitted(): ?array
+    {
+        return $this->emitted;
+    }
+
+    /**
      * Gets the error property value. Error message if the run failed. Null on success.
      */
     public function getError(): ?string
@@ -123,6 +137,9 @@ class PromptRun implements AdditionalDataHolder, Parsable
                 $n->getObjectValue([PromptRun_cost::class, 'createFromDiscriminatorValue']),
             ),
             'createdAt' => static fn (ParseNode $n) => $o->setCreatedAt($n->getDateTimeValue()),
+            'emitted' => static fn (ParseNode $n) => $o->setEmitted(
+                $n->getCollectionOfObjectValues([EmittedItem::class, 'createFromDiscriminatorValue']),
+            ),
             'error' => static fn (ParseNode $n) => $o->setError($n->getStringValue()),
             'finishedAt' => static fn (ParseNode $n) => $o->setFinishedAt($n->getDateTimeValue()),
             'id' => static fn (ParseNode $n) => $o->setId($n->getStringValue()),
@@ -182,6 +199,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     {
         $writer->writeObjectValue('cost', $this->getCost());
         $writer->writeDateTimeValue('createdAt', $this->getCreatedAt());
+        $writer->writeCollectionOfObjectValues('emitted', $this->getEmitted());
         $writer->writeStringValue('error', $this->getError());
         $writer->writeDateTimeValue('finishedAt', $this->getFinishedAt());
         $writer->writeStringValue('id', $this->getId());
@@ -216,6 +234,15 @@ class PromptRun implements AdditionalDataHolder, Parsable
     public function setCreatedAt(?DateTime $value): void
     {
         $this->createdAt = $value;
+    }
+
+    /**
+     * Sets the emitted property value. Payloads produced by emit tools during this run, in call order. Empty until the run completes.
+     * @param array<EmittedItem>|null $value Value to set for the emitted property.
+     */
+    public function setEmitted(?array $value): void
+    {
+        $this->emitted = $value;
     }
 
     /**
