@@ -25,13 +25,16 @@ class Model extends Enum
     public const GPT4O = 'gpt-4o';
     public const GPT4O_MINI = 'gpt-4o-mini';
     public const GEMINI31_PRO_PREVIEW = 'gemini-3.1-pro-preview';
+    public const GEMINI36_FLASH = 'gemini-3.6-flash';
     public const GEMINI35_FLASH = 'gemini-3.5-flash';
     public const GEMINI3_FLASH_PREVIEW = 'gemini-3-flash-preview';
+    public const GEMINI35_FLASH_LITE = 'gemini-3.5-flash-lite';
     public const GEMINI31_FLASH_LITE = 'gemini-3.1-flash-lite';
     public const GEMINI25_PRO = 'gemini-2.5-pro';
     public const GEMINI25_FLASH = 'gemini-2.5-flash';
     public const GEMINI25_FLASH_LITE = 'gemini-2.5-flash-lite';
     public const CLAUDE_FABLE5 = 'claude-fable-5';
+    public const CLAUDE_OPUS5 = 'claude-opus-5';
     public const CLAUDE_OPUS48 = 'claude-opus-4-8';
     public const CLAUDE_OPUS47 = 'claude-opus-4-7';
     public const CLAUDE_OPUS46 = 'claude-opus-4-6';
