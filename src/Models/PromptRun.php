@@ -66,6 +66,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?PromptRun_tokenUsage $tokenUsage = null;
     
     /**
+     * @var array<TranscriptItem>|null $transcript The run as a renderable sequence: assistant text, the tools it used, and emit payloads in position. Empty until the run completes. `output` remains the flat text for callers that only need the answer.
+     */
+    private ?array $transcript = null;
+    
+    /**
      * Instantiates a new PromptRun and sets the default values.
      */
     public function __construct()
@@ -148,6 +153,9 @@ class PromptRun implements AdditionalDataHolder, Parsable
             'tokenUsage' => static fn (ParseNode $n) => $o->setTokenUsage(
                 $n->getObjectValue([PromptRun_tokenUsage::class, 'createFromDiscriminatorValue']),
             ),
+            'transcript' => static fn (ParseNode $n) => $o->setTranscript(
+                $n->getCollectionOfObjectValues([TranscriptItem::class, 'createFromDiscriminatorValue']),
+            ),
         ];
     }
 
@@ -192,6 +200,15 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the transcript property value. The run as a renderable sequence: assistant text, the tools it used, and emit payloads in position. Empty until the run completes. `output` remains the flat text for callers that only need the answer.
+     * @return array<TranscriptItem>|null
+     */
+    public function getTranscript(): ?array
+    {
+        return $this->transcript;
+    }
+
+    /**
      * Serializes information the current object
      * @param SerializationWriter $writer Serialization writer to use to serialize this model
      */
@@ -206,6 +223,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
         $writer->writeStringValue('output', $this->getOutput());
         $writer->writeEnumValue('status', $this->getStatus());
         $writer->writeObjectValue('tokenUsage', $this->getTokenUsage());
+        $writer->writeCollectionOfObjectValues('transcript', $this->getTranscript());
         $writer->writeAdditionalData($this->getAdditionalData());
     }
 
@@ -297,5 +315,14 @@ class PromptRun implements AdditionalDataHolder, Parsable
     public function setTokenUsage(?PromptRun_tokenUsage $value): void
     {
         $this->tokenUsage = $value;
+    }
+
+    /**
+     * Sets the transcript property value. The run as a renderable sequence: assistant text, the tools it used, and emit payloads in position. Empty until the run completes. `output` remains the flat text for callers that only need the answer.
+     * @param array<TranscriptItem>|null $value Value to set for the transcript property.
+     */
+    public function setTranscript(?array $value): void
+    {
+        $this->transcript = $value;
     }
 }
