@@ -30,11 +30,6 @@ class Emit implements AdditionalDataHolder, Parsable
     private ?bool $failFast = null;
     
     /**
-     * @var bool|null $inline Whether to also splice the payload into the output text as an emit:<name> markdown fence at the call position.
-     */
-    private ?bool $inline = null;
-    
-    /**
      * @var string|null $name The tool’s name.
      */
     private ?string $name = null;
@@ -103,19 +98,10 @@ class Emit implements AdditionalDataHolder, Parsable
         return [
             'description' => static fn (ParseNode $n) => $o->setDescription($n->getStringValue()),
             'failFast' => static fn (ParseNode $n) => $o->setFailFast($n->getBooleanValue()),
-            'inline' => static fn (ParseNode $n) => $o->setInline($n->getBooleanValue()),
             'name' => static fn (ParseNode $n) => $o->setName($n->getStringValue()),
             'paramsSchema' => static fn (ParseNode $n) => $o->setParamsSchema($n->getStringValue()),
             'type' => static fn (ParseNode $n) => $o->setType($n->getEnumValue(Emit_type::class)),
         ];
-    }
-
-    /**
-     * Gets the inline property value. Whether to also splice the payload into the output text as an emit:<name> markdown fence at the call position.
-     */
-    public function getInline(): ?bool
-    {
-        return $this->inline;
     }
 
     /**
@@ -150,7 +136,6 @@ class Emit implements AdditionalDataHolder, Parsable
     {
         $writer->writeStringValue('description', $this->getDescription());
         $writer->writeBooleanValue('failFast', $this->getFailFast());
-        $writer->writeBooleanValue('inline', $this->getInline());
         $writer->writeStringValue('name', $this->getName());
         $writer->writeStringValue('paramsSchema', $this->getParamsSchema());
         $writer->writeEnumValue('type', $this->getType());
@@ -182,15 +167,6 @@ class Emit implements AdditionalDataHolder, Parsable
     public function setFailFast(?bool $value): void
     {
         $this->failFast = $value;
-    }
-
-    /**
-     * Sets the inline property value. Whether to also splice the payload into the output text as an emit:<name> markdown fence at the call position.
-     * @param bool|null $value Value to set for the inline property.
-     */
-    public function setInline(?bool $value): void
-    {
-        $this->inline = $value;
     }
 
     /**
