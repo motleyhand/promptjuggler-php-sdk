@@ -50,7 +50,6 @@ class Emit implements AdditionalDataHolder, Parsable
     public function __construct()
     {
         $this->setAdditionalData([]);
-        $this->setFailFast(false);
     }
 
     /**

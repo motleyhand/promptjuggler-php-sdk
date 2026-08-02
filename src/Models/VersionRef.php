@@ -20,12 +20,17 @@ class VersionRef implements AdditionalDataHolder, Parsable
     private ?array $additionalData = null;
     
     /**
+     * @var string|null $definitionId Definition – prompt or workflow – ID.
+     */
+    private ?string $definitionId = null;
+    
+    /**
      * @var VersionRef_idOrTag|null $idOrTag Revision ID or version number or tag.
      */
     private ?VersionRef_idOrTag $idOrTag = null;
     
     /**
-     * @var string|null $parentId Definition – prompt or workflow – ID.
+     * @var string|null $parentId Deprecated alias of definitionId.
      */
     private ?string $parentId = null;
     
@@ -56,6 +61,14 @@ class VersionRef implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the definitionId property value. Definition – prompt or workflow – ID.
+     */
+    public function getDefinitionId(): ?string
+    {
+        return $this->definitionId;
+    }
+
+    /**
      * The deserialization information for the current model
      * @return array<string, callable(ParseNode): void>
      */
@@ -64,6 +77,7 @@ class VersionRef implements AdditionalDataHolder, Parsable
         $o = $this;
 
         return [
+            'definitionId' => static fn (ParseNode $n) => $o->setDefinitionId($n->getStringValue()),
             'idOrTag' => static fn (ParseNode $n) => $o->setIdOrTag(
                 $n->getObjectValue([VersionRef_idOrTag::class, 'createFromDiscriminatorValue']),
             ),
@@ -80,7 +94,7 @@ class VersionRef implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the parentId property value. Definition – prompt or workflow – ID.
+     * Gets the parentId property value. Deprecated alias of definitionId.
      */
     public function getParentId(): ?string
     {
@@ -93,6 +107,7 @@ class VersionRef implements AdditionalDataHolder, Parsable
      */
     public function serialize(SerializationWriter $writer): void
     {
+        $writer->writeStringValue('definitionId', $this->getDefinitionId());
         $writer->writeObjectValue('idOrTag', $this->getIdOrTag());
         $writer->writeStringValue('parentId', $this->getParentId());
         $writer->writeAdditionalData($this->getAdditionalData());
@@ -108,6 +123,15 @@ class VersionRef implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Sets the definitionId property value. Definition – prompt or workflow – ID.
+     * @param string|null $value Value to set for the definitionId property.
+     */
+    public function setDefinitionId(?string $value): void
+    {
+        $this->definitionId = $value;
+    }
+
+    /**
      * Sets the idOrTag property value. Revision ID or version number or tag.
      * @param VersionRef_idOrTag|null $value Value to set for the idOrTag property.
      */
@@ -117,7 +141,7 @@ class VersionRef implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the parentId property value. Definition – prompt or workflow – ID.
+     * Sets the parentId property value. Deprecated alias of definitionId.
      * @param string|null $value Value to set for the parentId property.
      */
     public function setParentId(?string $value): void
