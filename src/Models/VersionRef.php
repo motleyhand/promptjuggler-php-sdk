@@ -30,11 +30,6 @@ class VersionRef implements AdditionalDataHolder, Parsable
     private ?VersionRef_idOrTag $idOrTag = null;
     
     /**
-     * @var string|null $parentId Deprecated alias of definitionId.
-     */
-    private ?string $parentId = null;
-    
-    /**
      * Instantiates a new VersionRef and sets the default values.
      */
     public function __construct()
@@ -81,7 +76,6 @@ class VersionRef implements AdditionalDataHolder, Parsable
             'idOrTag' => static fn (ParseNode $n) => $o->setIdOrTag(
                 $n->getObjectValue([VersionRef_idOrTag::class, 'createFromDiscriminatorValue']),
             ),
-            'parentId' => static fn (ParseNode $n) => $o->setParentId($n->getStringValue()),
         ];
     }
 
@@ -94,14 +88,6 @@ class VersionRef implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the parentId property value. Deprecated alias of definitionId.
-     */
-    public function getParentId(): ?string
-    {
-        return $this->parentId;
-    }
-
-    /**
      * Serializes information the current object
      * @param SerializationWriter $writer Serialization writer to use to serialize this model
      */
@@ -109,7 +95,6 @@ class VersionRef implements AdditionalDataHolder, Parsable
     {
         $writer->writeStringValue('definitionId', $this->getDefinitionId());
         $writer->writeObjectValue('idOrTag', $this->getIdOrTag());
-        $writer->writeStringValue('parentId', $this->getParentId());
         $writer->writeAdditionalData($this->getAdditionalData());
     }
 
@@ -138,14 +123,5 @@ class VersionRef implements AdditionalDataHolder, Parsable
     public function setIdOrTag(?VersionRef_idOrTag $value): void
     {
         $this->idOrTag = $value;
-    }
-
-    /**
-     * Sets the parentId property value. Deprecated alias of definitionId.
-     * @param string|null $value Value to set for the parentId property.
-     */
-    public function setParentId(?string $value): void
-    {
-        $this->parentId = $value;
     }
 }
