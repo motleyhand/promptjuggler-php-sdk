@@ -25,6 +25,7 @@ class Model extends Enum
     public const GPT4O = 'gpt-4o';
     public const GPT4O_MINI = 'gpt-4o-mini';
     public const GEMINI31_PRO_PREVIEW = 'gemini-3.1-pro-preview';
+    public const GEMINI37_FLASH = 'gemini-3.7-flash';
     public const GEMINI36_FLASH = 'gemini-3.6-flash';
     public const GEMINI35_FLASH = 'gemini-3.5-flash';
     public const GEMINI3_FLASH_PREVIEW = 'gemini-3-flash-preview';
