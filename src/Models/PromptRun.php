@@ -21,7 +21,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?array $additionalData = null;
     
     /**
-     * @var PromptRun_cost|null $cost Cost breakdown for the run. Null while pending.
+     * @var PromptRun_cost|null $cost Cost breakdown for the run. Null while pending, or when no published rate covers the run.
      */
     private ?PromptRun_cost $cost = null;
     
@@ -97,7 +97,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the cost property value. Cost breakdown for the run. Null while pending.
+     * Gets the cost property value. Cost breakdown for the run. Null while pending, or when no published rate covers the run.
      */
     public function getCost(): ?PromptRun_cost
     {
@@ -237,7 +237,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the cost property value. Cost breakdown for the run. Null while pending.
+     * Sets the cost property value. Cost breakdown for the run. Null while pending, or when no published rate covers the run.
      * @param PromptRun_cost|null $value Value to set for the cost property.
      */
     public function setCost(?PromptRun_cost $value): void

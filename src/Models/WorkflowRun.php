@@ -22,7 +22,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     private ?array $additionalData = null;
     
     /**
-     * @var WorkflowRun_cost|null $cost Aggregated cost breakdown across the workflow run. Null while pending.
+     * @var WorkflowRun_cost|null $cost Aggregated cost breakdown across the workflow run. Null while pending, or when no published rate covers one of its runs.
      */
     private ?WorkflowRun_cost $cost = null;
     
@@ -88,7 +88,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending.
+     * Gets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending, or when no published rate covers one of its runs.
      */
     public function getCost(): ?WorkflowRun_cost
     {
@@ -212,7 +212,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending.
+     * Sets the cost property value. Aggregated cost breakdown across the workflow run. Null while pending, or when no published rate covers one of its runs.
      * @param WorkflowRun_cost|null $value Value to set for the cost property.
      */
     public function setCost(?WorkflowRun_cost $value): void
