@@ -32,7 +32,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     private ?DateTime $createdAt = null;
     
     /**
-     * @var array<string>|null $errors List of error messages from failed nodes. Empty array on success.
+     * @var array<string>|null $errors Node run messages: failures, warnings from nodes that completed anyway (e.g. a non-fail-fast assertion), and the latest error of a node still retrying. Non-empty does not mean the run failed — read `status`.
      */
     private ?array $errors = null;
     
@@ -47,7 +47,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     private ?string $id = null;
     
     /**
-     * @var WorkflowRun_outputs|null $outputs Map of output node names to their values. Empty object while pending.
+     * @var WorkflowRun_outputs|null $outputs Map of output node names to their values. Only completed output nodes appear, so a pending or failed run can return a partial map — read `status` for completeness.
      */
     private ?WorkflowRun_outputs $outputs = null;
     
@@ -104,7 +104,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the errors property value. List of error messages from failed nodes. Empty array on success.
+     * Gets the errors property value. Node run messages: failures, warnings from nodes that completed anyway (e.g. a non-fail-fast assertion), and the latest error of a node still retrying. Non-empty does not mean the run failed — read `status`.
      * @return array<string>|null
      */
     public function getErrors(): ?array
@@ -162,7 +162,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the outputs property value. Map of output node names to their values. Empty object while pending.
+     * Gets the outputs property value. Map of output node names to their values. Only completed output nodes appear, so a pending or failed run can return a partial map — read `status` for completeness.
      */
     public function getOutputs(): ?WorkflowRun_outputs
     {
@@ -230,7 +230,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the errors property value. List of error messages from failed nodes. Empty array on success.
+     * Sets the errors property value. Node run messages: failures, warnings from nodes that completed anyway (e.g. a non-fail-fast assertion), and the latest error of a node still retrying. Non-empty does not mean the run failed — read `status`.
      * @param array<string>|null $value Value to set for the errors property.
      */
     public function setErrors(?array $value): void
@@ -257,7 +257,7 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the outputs property value. Map of output node names to their values. Empty object while pending.
+     * Sets the outputs property value. Map of output node names to their values. Only completed output nodes appear, so a pending or failed run can return a partial map — read `status` for completeness.
      * @param WorkflowRun_outputs|null $value Value to set for the outputs property.
      */
     public function setOutputs(?WorkflowRun_outputs $value): void

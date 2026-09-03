@@ -10,7 +10,7 @@ use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 
 /**
- * Map of output node names to their values. Empty object while pending.
+ * Map of output node names to their values. Only completed output nodes appear, so a pending or failed run can return a partial map — read `status` for completeness.
  */
 class WorkflowRun_outputs implements AdditionalDataHolder, Parsable
 {

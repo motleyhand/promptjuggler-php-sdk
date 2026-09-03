@@ -36,7 +36,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?array $emitted = null;
     
     /**
-     * @var string|null $error Error message if the run failed. Null on success.
+     * @var string|null $error Error message from the latest failed attempt, kept even once a retry recovers — so a pending or completed run can carry one. Read `status` for the outcome.
      */
     private ?string $error = null;
     
@@ -51,7 +51,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?string $id = null;
     
     /**
-     * @var string|null $output LLM output text. Null while pending or when the run failed.
+     * @var string|null $output LLM output text produced so far; read `status` for completeness. Null when the run failed, or when the model returned no text — e.g. a turn that was only tool calls or only reasoning.
      */
     private ?string $output = null;
     
@@ -61,7 +61,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     private ?RunStatus $status = null;
     
     /**
-     * @var PromptRun_tokenUsage|null $tokenUsage Token usage for the successful run. Null while pending or when the run failed.
+     * @var PromptRun_tokenUsage|null $tokenUsage Token usage accumulated over successful turns — a run that failed later still reports the earlier ones. Null until the first turn succeeds.
      */
     private ?PromptRun_tokenUsage $tokenUsage = null;
     
@@ -122,7 +122,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the error property value. Error message if the run failed. Null on success.
+     * Gets the error property value. Error message from the latest failed attempt, kept even once a retry recovers — so a pending or completed run can carry one. Read `status` for the outcome.
      */
     public function getError(): ?string
     {
@@ -176,7 +176,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the output property value. LLM output text. Null while pending or when the run failed.
+     * Gets the output property value. LLM output text produced so far; read `status` for completeness. Null when the run failed, or when the model returned no text — e.g. a turn that was only tool calls or only reasoning.
      */
     public function getOutput(): ?string
     {
@@ -192,7 +192,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the tokenUsage property value. Token usage for the successful run. Null while pending or when the run failed.
+     * Gets the tokenUsage property value. Token usage accumulated over successful turns — a run that failed later still reports the earlier ones. Null until the first turn succeeds.
      */
     public function getTokenUsage(): ?PromptRun_tokenUsage
     {
@@ -264,7 +264,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the error property value. Error message if the run failed. Null on success.
+     * Sets the error property value. Error message from the latest failed attempt, kept even once a retry recovers — so a pending or completed run can carry one. Read `status` for the outcome.
      * @param string|null $value Value to set for the error property.
      */
     public function setError(?string $value): void
@@ -291,7 +291,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the output property value. LLM output text. Null while pending or when the run failed.
+     * Sets the output property value. LLM output text produced so far; read `status` for completeness. Null when the run failed, or when the model returned no text — e.g. a turn that was only tool calls or only reasoning.
      * @param string|null $value Value to set for the output property.
      */
     public function setOutput(?string $value): void
@@ -309,7 +309,7 @@ class PromptRun implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the tokenUsage property value. Token usage for the successful run. Null while pending or when the run failed.
+     * Sets the tokenUsage property value. Token usage accumulated over successful turns — a run that failed later still reports the earlier ones. Null until the first turn succeeds.
      * @param PromptRun_tokenUsage|null $value Value to set for the tokenUsage property.
      */
     public function setTokenUsage(?PromptRun_tokenUsage $value): void
