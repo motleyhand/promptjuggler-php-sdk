@@ -27,6 +27,11 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     private ?int $inputCached = null;
     
     /**
+     * @var int|null $inputCacheWrite The inputCacheWrite property
+     */
+    private ?int $inputCacheWrite = null;
+    
+    /**
      * @var int|null $output The output property
      */
     private ?int $output = null;
@@ -52,6 +57,7 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     public function __construct()
     {
         $this->setAdditionalData([]);
+        $this->setInputCacheWrite(0);
     }
 
     /**
@@ -83,6 +89,7 @@ class TokenUsage implements AdditionalDataHolder, Parsable
         return [
             'input' => static fn (ParseNode $n) => $o->setInput($n->getIntegerValue()),
             'inputCached' => static fn (ParseNode $n) => $o->setInputCached($n->getIntegerValue()),
+            'inputCacheWrite' => static fn (ParseNode $n) => $o->setInputCacheWrite($n->getIntegerValue()),
             'output' => static fn (ParseNode $n) => $o->setOutput($n->getIntegerValue()),
             'reasoning' => static fn (ParseNode $n) => $o->setReasoning($n->getIntegerValue()),
             'serviceTier' => static fn (ParseNode $n) => $o->setServiceTier($n->getEnumValue(ServiceTier::class)),
@@ -104,6 +111,14 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     public function getInputCached(): ?int
     {
         return $this->inputCached;
+    }
+
+    /**
+     * Gets the inputCacheWrite property value. The inputCacheWrite property
+     */
+    public function getInputCacheWrite(): ?int
+    {
+        return $this->inputCacheWrite;
     }
 
     /**
@@ -146,6 +161,7 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     {
         $writer->writeIntegerValue('input', $this->getInput());
         $writer->writeIntegerValue('inputCached', $this->getInputCached());
+        $writer->writeIntegerValue('inputCacheWrite', $this->getInputCacheWrite());
         $writer->writeIntegerValue('output', $this->getOutput());
         $writer->writeIntegerValue('reasoning', $this->getReasoning());
         $writer->writeEnumValue('serviceTier', $this->getServiceTier());
@@ -178,6 +194,15 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     public function setInputCached(?int $value): void
     {
         $this->inputCached = $value;
+    }
+
+    /**
+     * Sets the inputCacheWrite property value. The inputCacheWrite property
+     * @param int|null $value Value to set for the inputCacheWrite property.
+     */
+    public function setInputCacheWrite(?int $value): void
+    {
+        $this->inputCacheWrite = $value;
     }
 
     /**

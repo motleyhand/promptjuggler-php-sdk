@@ -22,6 +22,11 @@ class ModelCost implements AdditionalDataHolder, Parsable
     private ?float $cachedInput = null;
     
     /**
+     * @var float|null $cacheWrite The cacheWrite property
+     */
+    private ?float $cacheWrite = null;
+    
+    /**
      * @var float|null $input The input property
      */
     private ?float $input = null;
@@ -76,6 +81,14 @@ class ModelCost implements AdditionalDataHolder, Parsable
     }
 
     /**
+     * Gets the cacheWrite property value. The cacheWrite property
+     */
+    public function getCacheWrite(): ?float
+    {
+        return $this->cacheWrite;
+    }
+
+    /**
      * The deserialization information for the current model
      * @return array<string, callable(ParseNode): void>
      */
@@ -85,6 +98,7 @@ class ModelCost implements AdditionalDataHolder, Parsable
 
         return [
             'cachedInput' => static fn (ParseNode $n) => $o->setCachedInput($n->getFloatValue()),
+            'cacheWrite' => static fn (ParseNode $n) => $o->setCacheWrite($n->getFloatValue()),
             'input' => static fn (ParseNode $n) => $o->setInput($n->getFloatValue()),
             'output' => static fn (ParseNode $n) => $o->setOutput($n->getFloatValue()),
             'total' => static fn (ParseNode $n) => $o->setTotal($n->getFloatValue()),
@@ -131,6 +145,7 @@ class ModelCost implements AdditionalDataHolder, Parsable
     public function serialize(SerializationWriter $writer): void
     {
         $writer->writeFloatValue('cachedInput', $this->getCachedInput());
+        $writer->writeFloatValue('cacheWrite', $this->getCacheWrite());
         $writer->writeFloatValue('input', $this->getInput());
         $writer->writeFloatValue('output', $this->getOutput());
         $writer->writeFloatValue('total', $this->getTotal());
@@ -154,6 +169,15 @@ class ModelCost implements AdditionalDataHolder, Parsable
     public function setCachedInput(?float $value): void
     {
         $this->cachedInput = $value;
+    }
+
+    /**
+     * Sets the cacheWrite property value. The cacheWrite property
+     * @param float|null $value Value to set for the cacheWrite property.
+     */
+    public function setCacheWrite(?float $value): void
+    {
+        $this->cacheWrite = $value;
     }
 
     /**
