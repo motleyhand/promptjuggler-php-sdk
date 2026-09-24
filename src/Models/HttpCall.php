@@ -30,7 +30,7 @@ class HttpCall implements AdditionalDataHolder, Parsable
     private ?bool $failFast = null;
     
     /**
-     * @var array<HttpHeader>|null $headers The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders.
+     * @var array<HttpHeader>|null $headers The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders; a credential header (Authorization, *-Key, *-Token, …) must take its secret from one.
      */
     private ?array $headers = null;
     
@@ -124,7 +124,7 @@ class HttpCall implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the headers property value. The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders.
+     * Gets the headers property value. The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders; a credential header (Authorization, *-Key, *-Token, …) must take its secret from one.
      * @return array<HttpHeader>|null
      */
     public function getHeaders(): ?array
@@ -217,7 +217,7 @@ class HttpCall implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the headers property value. The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders.
+     * Sets the headers property value. The headers to send with the HTTP request. Can contain ${ENV_VAR} and {{inputName}} placeholders; a credential header (Authorization, *-Key, *-Token, …) must take its secret from one.
      * @param array<HttpHeader>|null $value Value to set for the headers property.
      */
     public function setHeaders(?array $value): void
