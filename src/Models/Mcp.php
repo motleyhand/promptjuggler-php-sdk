@@ -26,7 +26,7 @@ class Mcp implements AdditionalDataHolder, Parsable
     private ?array $allowedTools = null;
     
     /**
-     * @var string|null $authorizationToken Authorization token for the MCP server.
+     * @var string|null $authorizationToken Environment variable holding the MCP server’s authorization token, referenced as ${NAME}.
      */
     private ?string $authorizationToken = null;
     
@@ -81,7 +81,7 @@ class Mcp implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Gets the authorizationToken property value. Authorization token for the MCP server.
+     * Gets the authorizationToken property value. Environment variable holding the MCP server’s authorization token, referenced as ${NAME}.
      */
     public function getAuthorizationToken(): ?string
     {
@@ -169,7 +169,7 @@ class Mcp implements AdditionalDataHolder, Parsable
     }
 
     /**
-     * Sets the authorizationToken property value. Authorization token for the MCP server.
+     * Sets the authorizationToken property value. Environment variable holding the MCP server’s authorization token, referenced as ${NAME}.
      * @param string|null $value Value to set for the authorizationToken property.
      */
     public function setAuthorizationToken(?string $value): void
