@@ -32,8 +32,10 @@ if ($run->getStatus()?->is(RunStatus::COMPLETED)) {
 }
 ```
 
-Errors surface as `PromptJuggler\Client\Exception\ApiException` (with a `statusCode`).
-Verify incoming webhooks with `PromptJuggler\Client\Webhook\WebhookSignature::isValid()`.
+Errors surface as `ApiException` (with a `statusCode`), `NetworkException` (no response), or
+`DecodeException` (an undecodable success body), all in `PromptJuggler\Client\Exception` and
+implementing `PromptJugglerException`. Verify incoming webhooks with
+`PromptJuggler\Client\Webhook\WebhookSignature::isValid()`.
 
 ## Documentation
 

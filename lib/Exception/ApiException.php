@@ -9,7 +9,7 @@ use Throwable;
 
 /**
  * Thrown when the API responds with an error status. Carries the HTTP status code
- * and the server's error message; the original Kiota exception is the `previous`.
+ * and the server's error message, or the status line when the body has none.
  */
 final class ApiException extends Exception implements PromptJugglerException
 {

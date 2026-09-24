@@ -4,15 +4,23 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client;
 
+use Exception;
 use GuzzleHttp\ClientInterface;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\MultipartStream;
+use LogicException;
 use Microsoft\Kiota\Abstractions\ApiException as KiotaApiException;
 use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
 use Microsoft\Kiota\Abstractions\MultiPartBody;
 use Microsoft\Kiota\Abstractions\RequestAdapter;
 use Microsoft\Kiota\Http\GuzzleRequestAdapter;
+use Microsoft\Kiota\Http\KiotaClientFactory;
 use PromptJuggler\Client\Auth\StaticAccessTokenProvider;
 use PromptJuggler\Client\Exception\ApiException;
+use PromptJuggler\Client\Exception\DecodeException;
+use PromptJuggler\Client\Exception\NetworkException;
+use PromptJuggler\Client\Exception\PromptJugglerException;
+use PromptJuggler\Client\Http\ResponseRecordingClient;
 use PromptJuggler\Client\Models\CreatePromptRun;
 use PromptJuggler\Client\Models\CreatePromptRun_envVars;
 use PromptJuggler\Client\Models\CreatePromptRun_inputs;
@@ -32,6 +40,7 @@ use PromptJuggler\Client\Models\PromptRevision;
 use PromptJuggler\Client\Models\PromptRun;
 use PromptJuggler\Client\Models\StreamTokenResponse;
 use PromptJuggler\Client\Models\WorkflowRun;
+use TypeError;
 
 /**
  * Synchronous, ergonomic entry point to the PromptJuggler API. Wraps the generated
@@ -39,18 +48,20 @@ use PromptJuggler\Client\Models\WorkflowRun;
  */
 final class PromptJuggler
 {
+    private readonly ResponseRecordingClient $http;
     private readonly RequestAdapter $adapter;
     private readonly PromptJugglerClient $client;
 
     public function __construct(string $apiKey, ?ClientInterface $httpClient = null)
     {
         $authProvider = new BaseBearerTokenAuthenticationProvider(new StaticAccessTokenProvider($apiKey));
-        $this->adapter = new GuzzleRequestAdapter($authProvider, null, null, $httpClient);
+        $this->http = new ResponseRecordingClient($httpClient ?? KiotaClientFactory::create());
+        $this->adapter = new GuzzleRequestAdapter($authProvider, null, null, $this->http);
         $this->client = new PromptJugglerClient($this->adapter);
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function getPrompt(string $slug, int|string $version): PromptRevision
     {
@@ -63,7 +74,7 @@ final class PromptJuggler
      * @param array<string, string> $inputs
      * @param array<string, string>|null $envVars
      * @param array<string, string|string[]>|null $metadata
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function runPrompt(
         string $slug,
@@ -113,7 +124,7 @@ final class PromptJuggler
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function getPromptRun(string $id): PromptRun
     {
@@ -124,7 +135,7 @@ final class PromptJuggler
      * @param array<string, string> $inputs
      * @param array<string, string>|null $envVars
      * @param array<string, string|string[]>|null $metadata
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function runWorkflow(
         string $slug,
@@ -170,7 +181,7 @@ final class PromptJuggler
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function getWorkflowRun(string $id): WorkflowRun
     {
@@ -184,7 +195,7 @@ final class PromptJuggler
      *
      * Connect before triggering a run: tokens emitted while nobody is subscribed are not replayed.
      *
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function createStreamToken(string $thread): StreamTokenResponse
     {
@@ -194,7 +205,7 @@ final class PromptJuggler
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function getKnowledgeBase(string $slug): KnowledgeBaseResponse
     {
@@ -202,7 +213,7 @@ final class PromptJuggler
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function getKnowledgeDocument(string $id): KnowledgeDocumentResponse
     {
@@ -210,7 +221,7 @@ final class PromptJuggler
     }
 
     /**
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function deleteKnowledgeDocument(string $id): void
     {
@@ -220,7 +231,7 @@ final class PromptJuggler
     /**
      * @param array<string, string> $files filename => raw file contents
      * @return list<KnowledgeDocumentResponse>
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     public function uploadDocuments(string $slug, array $files): array
     {
@@ -256,50 +267,71 @@ final class PromptJuggler
     }
 
     /**
-     * Run a request that returns a value, translating Kiota's exception into the
-     * SDK's own and guaranteeing a non-null result for the caller.
+     * Run a request that returns a value, guaranteeing a non-null result for the caller.
      *
      * @template T
      * @param callable(): (T|null) $request
      * @return T
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     private function send(callable $request): mixed
     {
-        try {
-            $result = $request();
-        } catch (KiotaApiException $e) {
-            throw $this->translate($e);
-        }
-
-        if ($result === null) {
-            throw new ApiException('The API returned an empty response.', null);
-        }
-
-        return $result;
+        return $this->call($request) ?? throw new DecodeException('The API returned an empty response.');
     }
 
     /**
-     * Run a request with no response body (e.g. DELETE), translating errors.
+     * Run a request with no response body (e.g. DELETE).
      *
      * @param callable(): mixed $request
-     * @throws ApiException
+     * @throws PromptJugglerException
      */
     private function sendVoid(callable $request): void
     {
+        $this->call($request);
+    }
+
+    /**
+     * Run a request, translating what Kiota and Guzzle throw into the SDK's own exceptions.
+     *
+     * @template T
+     * @param callable(): T $request
+     * @return T
+     * @throws ApiException|DecodeException|NetworkException
+     */
+    private function call(callable $request): mixed
+    {
+        $this->http->forget();
+
         try {
-            $request();
+            return $request();
         } catch (KiotaApiException $e) {
             throw $this->translate($e);
+        } catch (TransferException $e) {
+            throw new NetworkException($e->getMessage(), $e);
+        } catch (Exception|TypeError $e) {
+            // Kiota throws plain exceptions (a TypeError for a mistyped enum) on a body it can't read,
+            // whatever the status it came with.
+            $response = $this->http->lastResponse() ?? throw new LogicException($e->getMessage(), 0, $e);
+            $status = $response->getStatusCode();
+
+            throw $status < 400
+                ? new DecodeException($e->getMessage(), $e)
+                : new ApiException(trim("{$status} {$response->getReasonPhrase()}"), $status, $e);
         }
     }
 
     private function translate(KiotaApiException $e): ApiException
     {
-        $message = $e instanceof ErrorResponse && $e->getError() !== null
-            ? $e->getError()
-            : $e->getMessage();
+        return new ApiException($this->serverError() ?? $e->getMessage(), $e->getResponseStatusCode(), $e);
+    }
 
-        return new ApiException($message, $e->getResponseStatusCode(), $e);
+    /**
+     * The `error` field of the last response's JSON body, if it has one.
+     */
+    private function serverError(): ?string
+    {
+        $body = json_decode((string) $this->http->lastResponse()?->getBody(), true);
+
+        return \is_array($body) && \is_string($body['error'] ?? null) ? $body['error'] : null;
     }
 }
