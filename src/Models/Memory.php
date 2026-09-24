@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class Memory extends Enum
+class Memory extends OpenEnum
 {
     public const STATELESS = 'stateless';
     public const READ_ONLY = 'read_only';

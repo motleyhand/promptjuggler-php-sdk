@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class KnowledgeBaseStatus extends Enum
+class KnowledgeBaseStatus extends OpenEnum
 {
     public const PENDING = 'pending';
     public const READY = 'ready';

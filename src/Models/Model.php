@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class Model extends Enum
+class Model extends OpenEnum
 {
     public const GPT6_ASTRA = 'gpt-6-astra';
     public const GPT56_SOL = 'gpt-5.6-sol';

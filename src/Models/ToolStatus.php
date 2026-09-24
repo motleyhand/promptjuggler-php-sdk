@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class ToolStatus extends Enum
+class ToolStatus extends OpenEnum
 {
     public const OK = 'ok';
     public const ERROR = 'error';

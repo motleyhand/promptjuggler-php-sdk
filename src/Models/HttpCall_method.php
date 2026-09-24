@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class HttpCall_method extends Enum
+class HttpCall_method extends OpenEnum
 {
     public const G_E_T = 'GET';
     public const P_O_S_T = 'POST';

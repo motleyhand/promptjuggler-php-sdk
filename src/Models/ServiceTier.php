@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class ServiceTier extends Enum
+class ServiceTier extends OpenEnum
 {
     public const AUTO = 'auto';
     public const DEFAULT = 'default';

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Enum;
+use PromptJuggler\Client\OpenEnum;
 
-class TranscriptData_type extends Enum
+class TranscriptData_type extends OpenEnum
 {
     public const DATA = 'data';
 }
