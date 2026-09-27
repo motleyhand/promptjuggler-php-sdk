@@ -9,6 +9,8 @@ use PromptJuggler\Client\OpenEnum;
 class Model extends OpenEnum
 {
     public const GPT6_ASTRA = 'gpt-6-astra';
+    public const GPT6_SOL = 'gpt-6-sol';
+    public const GPT6_LUNA = 'gpt-6-luna';
     public const GPT56_SOL = 'gpt-5.6-sol';
     public const GPT56_TERRA = 'gpt-5.6-terra';
     public const GPT56_LUNA = 'gpt-5.6-luna';
@@ -38,6 +40,7 @@ class Model extends OpenEnum
     public const GEMINI25_FLASH_LITE = 'gemini-2.5-flash-lite';
     public const CLAUDE_FABLE51 = 'claude-fable-5-1';
     public const CLAUDE_FABLE5 = 'claude-fable-5';
+    public const CLAUDE_OPUS55 = 'claude-opus-5-5';
     public const CLAUDE_OPUS5 = 'claude-opus-5';
     public const CLAUDE_OPUS48 = 'claude-opus-4-8';
     public const CLAUDE_OPUS47 = 'claude-opus-4-7';
