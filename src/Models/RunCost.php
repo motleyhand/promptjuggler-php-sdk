@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 class RunCost implements AdditionalDataHolder, Parsable
 {
@@ -79,25 +80,31 @@ class RunCost implements AdditionalDataHolder, Parsable
     /**
      * Gets the retries property value. The retries property
      */
-    public function getRetries(): ?ModelCost
+    public function getRetries(): ModelCost
     {
-        return $this->retries;
+        return $this->retries ?? throw new UnexpectedValueException(
+            'Required field RunCost.retries is missing from the API response.',
+        );
     }
 
     /**
      * Gets the success property value. The success property
      */
-    public function getSuccess(): ?ModelCost
+    public function getSuccess(): ModelCost
     {
-        return $this->success;
+        return $this->success ?? throw new UnexpectedValueException(
+            'Required field RunCost.success is missing from the API response.',
+        );
     }
 
     /**
      * Gets the total property value. The total property
      */
-    public function getTotal(): ?float
+    public function getTotal(): float
     {
-        return $this->total;
+        return $this->total ?? throw new UnexpectedValueException(
+            'Required field RunCost.total is missing from the API response.',
+        );
     }
 
     /**

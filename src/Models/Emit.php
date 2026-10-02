@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Emit a schema-validated payload: the arguments are the result.
@@ -81,9 +82,11 @@ class Emit implements AdditionalDataHolder, Parsable
     /**
      * Gets the failFast property value. Whether to stop processing if a tool call fails.
      */
-    public function getFailFast(): ?bool
+    public function getFailFast(): bool
     {
-        return $this->failFast;
+        return $this->failFast ?? throw new UnexpectedValueException(
+            'Required field Emit.failFast is missing from the API response.',
+        );
     }
 
     /**
@@ -106,25 +109,31 @@ class Emit implements AdditionalDataHolder, Parsable
     /**
      * Gets the name property value. The tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field Emit.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the paramsSchema property value. JSON schema of the payload this tool emits.
      */
-    public function getParamsSchema(): ?string
+    public function getParamsSchema(): string
     {
-        return $this->paramsSchema;
+        return $this->paramsSchema ?? throw new UnexpectedValueException(
+            'Required field Emit.paramsSchema is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?Emit_type
+    public function getType(): Emit_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field Emit.type is missing from the API response.',
+        );
     }
 
     /**

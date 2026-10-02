@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+use UnexpectedValueException;
 
 /**
  * Built-in web search.
@@ -89,9 +90,11 @@ class WebSearch implements AdditionalDataHolder, Parsable
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?WebSearch_type
+    public function getType(): WebSearch_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field WebSearch.type is missing from the API response.',
+        );
     }
 
     /**

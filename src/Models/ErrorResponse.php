@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Error response.
@@ -55,9 +56,11 @@ class ErrorResponse extends ApiException implements AdditionalDataHolder, Parsab
     /**
      * Gets the error property value. Error message.
      */
-    public function getError(): ?string
+    public function getError(): string
     {
-        return $this->error;
+        return $this->error ?? throw new UnexpectedValueException(
+            'Required field ErrorResponse.error is missing from the API response.',
+        );
     }
 
     /**

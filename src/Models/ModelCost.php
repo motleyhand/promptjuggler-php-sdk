@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 class ModelCost implements AdditionalDataHolder, Parsable
 {
@@ -75,17 +76,21 @@ class ModelCost implements AdditionalDataHolder, Parsable
     /**
      * Gets the cachedInput property value. The cachedInput property
      */
-    public function getCachedInput(): ?float
+    public function getCachedInput(): float
     {
-        return $this->cachedInput;
+        return $this->cachedInput ?? throw new UnexpectedValueException(
+            'Required field ModelCost.cachedInput is missing from the API response.',
+        );
     }
 
     /**
      * Gets the cacheWrite property value. The cacheWrite property
      */
-    public function getCacheWrite(): ?float
+    public function getCacheWrite(): float
     {
-        return $this->cacheWrite;
+        return $this->cacheWrite ?? throw new UnexpectedValueException(
+            'Required field ModelCost.cacheWrite is missing from the API response.',
+        );
     }
 
     /**
@@ -109,33 +114,41 @@ class ModelCost implements AdditionalDataHolder, Parsable
     /**
      * Gets the input property value. The input property
      */
-    public function getInput(): ?float
+    public function getInput(): float
     {
-        return $this->input;
+        return $this->input ?? throw new UnexpectedValueException(
+            'Required field ModelCost.input is missing from the API response.',
+        );
     }
 
     /**
      * Gets the output property value. The output property
      */
-    public function getOutput(): ?float
+    public function getOutput(): float
     {
-        return $this->output;
+        return $this->output ?? throw new UnexpectedValueException(
+            'Required field ModelCost.output is missing from the API response.',
+        );
     }
 
     /**
      * Gets the total property value. The total property
      */
-    public function getTotal(): ?float
+    public function getTotal(): float
     {
-        return $this->total;
+        return $this->total ?? throw new UnexpectedValueException(
+            'Required field ModelCost.total is missing from the API response.',
+        );
     }
 
     /**
      * Gets the webSearch property value. The webSearch property
      */
-    public function getWebSearch(): ?float
+    public function getWebSearch(): float
     {
-        return $this->webSearch;
+        return $this->webSearch ?? throw new UnexpectedValueException(
+            'Required field ModelCost.webSearch is missing from the API response.',
+        );
     }
 
     /**

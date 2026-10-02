@@ -55,9 +55,9 @@ final class PromptsTest extends SdkTestCase
 
         $prompt = $pj->getPrompt('greeting', 'production');
 
-        self::assertSame('gpt-9', $prompt->getModel()?->value());
-        self::assertSame('ultra', $prompt->getModelParams()?->getReasoningEffort()?->value());
-        self::assertSame('QUERY', $prompt->getTools()[0]->getHttpCall()?->getMethod()?->value());
+        self::assertSame('gpt-9', $prompt->getModel()->value());
+        self::assertSame('ultra', $prompt->getModelParams()->getReasoningEffort()?->value());
+        self::assertSame('QUERY', $prompt->getTools()[0]->getHttpCall()?->getMethod()->value());
     }
 
     public function testRunPromptRejectsUnknownPriorityBeforeSending(): void

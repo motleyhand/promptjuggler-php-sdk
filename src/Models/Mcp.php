@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+use UnexpectedValueException;
 
 /**
  * Built-in MCP server tool.
@@ -115,25 +116,31 @@ class Mcp implements AdditionalDataHolder, Parsable
     /**
      * Gets the name property value. The MCP server tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field Mcp.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?Mcp_type
+    public function getType(): Mcp_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field Mcp.type is missing from the API response.',
+        );
     }
 
     /**
      * Gets the url property value. The URL of the MCP server.
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
-        return $this->url;
+        return $this->url ?? throw new UnexpectedValueException(
+            'Required field Mcp.url is missing from the API response.',
+        );
     }
 
     /**

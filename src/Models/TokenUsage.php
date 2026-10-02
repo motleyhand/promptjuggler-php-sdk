@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 class TokenUsage implements AdditionalDataHolder, Parsable
 {
@@ -100,17 +101,21 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     /**
      * Gets the input property value. The input property
      */
-    public function getInput(): ?int
+    public function getInput(): int
     {
-        return $this->input;
+        return $this->input ?? throw new UnexpectedValueException(
+            'Required field TokenUsage.input is missing from the API response.',
+        );
     }
 
     /**
      * Gets the inputCached property value. The inputCached property
      */
-    public function getInputCached(): ?int
+    public function getInputCached(): int
     {
-        return $this->inputCached;
+        return $this->inputCached ?? throw new UnexpectedValueException(
+            'Required field TokenUsage.inputCached is missing from the API response.',
+        );
     }
 
     /**
@@ -124,17 +129,21 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     /**
      * Gets the output property value. The output property
      */
-    public function getOutput(): ?int
+    public function getOutput(): int
     {
-        return $this->output;
+        return $this->output ?? throw new UnexpectedValueException(
+            'Required field TokenUsage.output is missing from the API response.',
+        );
     }
 
     /**
      * Gets the reasoning property value. The reasoning property
      */
-    public function getReasoning(): ?int
+    public function getReasoning(): int
     {
-        return $this->reasoning;
+        return $this->reasoning ?? throw new UnexpectedValueException(
+            'Required field TokenUsage.reasoning is missing from the API response.',
+        );
     }
 
     /**
@@ -148,9 +157,11 @@ class TokenUsage implements AdditionalDataHolder, Parsable
     /**
      * Gets the total property value. The total property
      */
-    public function getTotal(): ?int
+    public function getTotal(): int
     {
-        return $this->total;
+        return $this->total ?? throw new UnexpectedValueException(
+            'Required field TokenUsage.total is missing from the API response.',
+        );
     }
 
     /**

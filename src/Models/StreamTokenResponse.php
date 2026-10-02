@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * A short-lived credential for subscribing to a thread's token stream.
@@ -64,9 +65,11 @@ class StreamTokenResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the expiresAt property value. Timestamp when the token stops being accepted.
      */
-    public function getExpiresAt(): ?DateTime
+    public function getExpiresAt(): DateTime
     {
-        return $this->expiresAt;
+        return $this->expiresAt ?? throw new UnexpectedValueException(
+            'Required field StreamTokenResponse.expiresAt is missing from the API response.',
+        );
     }
 
     /**
@@ -87,17 +90,21 @@ class StreamTokenResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the token property value. Bearer token for the streaming endpoint. Safe to hand to a browser — it grants read access to this one thread and nothing else.
      */
-    public function getToken(): ?string
+    public function getToken(): string
     {
-        return $this->token;
+        return $this->token ?? throw new UnexpectedValueException(
+            'Required field StreamTokenResponse.token is missing from the API response.',
+        );
     }
 
     /**
      * Gets the url property value. Fully-resolved SSE endpoint for this thread. Connect here with the token as a Bearer credential.
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
-        return $this->url;
+        return $this->url ?? throw new UnexpectedValueException(
+            'Required field StreamTokenResponse.url is missing from the API response.',
+        );
     }
 
     /**

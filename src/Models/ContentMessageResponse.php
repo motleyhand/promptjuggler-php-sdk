@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * User or assistant message.
@@ -58,9 +59,11 @@ class ContentMessageResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the content property value. Message content.
      */
-    public function getContent(): ?string
+    public function getContent(): string
     {
-        return $this->content;
+        return $this->content ?? throw new UnexpectedValueException(
+            'Required field ContentMessageResponse.content is missing from the API response.',
+        );
     }
 
     /**
@@ -80,9 +83,11 @@ class ContentMessageResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the role property value. Message direction / role.
      */
-    public function getRole(): ?Role
+    public function getRole(): Role
     {
-        return $this->role;
+        return $this->role ?? throw new UnexpectedValueException(
+            'Required field ContentMessageResponse.role is missing from the API response.',
+        );
     }
 
     /**

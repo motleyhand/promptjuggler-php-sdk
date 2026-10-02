@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Knowledge base with documents
@@ -73,26 +74,32 @@ class KnowledgeBaseResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the chunkCount property value. Total number of chunks across all documents
      */
-    public function getChunkCount(): ?int
+    public function getChunkCount(): int
     {
-        return $this->chunkCount;
+        return $this->chunkCount ?? throw new UnexpectedValueException(
+            'Required field KnowledgeBaseResponse.chunkCount is missing from the API response.',
+        );
     }
 
     /**
      * Gets the documentCount property value. Total number of documents
      */
-    public function getDocumentCount(): ?int
+    public function getDocumentCount(): int
     {
-        return $this->documentCount;
+        return $this->documentCount ?? throw new UnexpectedValueException(
+            'Required field KnowledgeBaseResponse.documentCount is missing from the API response.',
+        );
     }
 
     /**
      * Gets the documents property value. The documents property
-     * @return array<KnowledgeDocumentSummary>|null
+     * @return array<KnowledgeDocumentSummary>
      */
-    public function getDocuments(): ?array
+    public function getDocuments(): array
     {
-        return $this->documents;
+        return $this->documents ?? throw new UnexpectedValueException(
+            'Required field KnowledgeBaseResponse.documents is missing from the API response.',
+        );
     }
 
     /**
@@ -117,17 +124,21 @@ class KnowledgeBaseResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the id property value. Knowledge base ID
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field KnowledgeBaseResponse.id is missing from the API response.',
+        );
     }
 
     /**
      * Gets the status property value. Processing status
      */
-    public function getStatus(): ?KnowledgeBaseStatus
+    public function getStatus(): KnowledgeBaseStatus
     {
-        return $this->status;
+        return $this->status ?? throw new UnexpectedValueException(
+            'Required field KnowledgeBaseResponse.status is missing from the API response.',
+        );
     }
 
     /**

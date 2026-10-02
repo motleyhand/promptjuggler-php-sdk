@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * A block of assistant text.
@@ -62,19 +63,23 @@ class TranscriptText implements AdditionalDataHolder, Parsable
 
     /**
      * Gets the citations property value. Sources cited in this block, deduplicated by URL. Empty unless the model cited any.
-     * @return array<Citation>|null
+     * @return array<Citation>
      */
-    public function getCitations(): ?array
+    public function getCitations(): array
     {
-        return $this->citations;
+        return $this->citations ?? throw new UnexpectedValueException(
+            'Required field TranscriptText.citations is missing from the API response.',
+        );
     }
 
     /**
      * Gets the content property value. The assistant text.
      */
-    public function getContent(): ?string
+    public function getContent(): string
     {
-        return $this->content;
+        return $this->content ?? throw new UnexpectedValueException(
+            'Required field TranscriptText.content is missing from the API response.',
+        );
     }
 
     /**
@@ -97,9 +102,11 @@ class TranscriptText implements AdditionalDataHolder, Parsable
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?TranscriptText_type
+    public function getType(): TranscriptText_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field TranscriptText.type is missing from the API response.',
+        );
     }
 
     /**

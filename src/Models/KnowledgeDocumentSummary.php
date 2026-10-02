@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Knowledge document summary (without counts)
@@ -73,9 +74,11 @@ class KnowledgeDocumentSummary implements AdditionalDataHolder, Parsable
     /**
      * Gets the bytes property value. File size in bytes
      */
-    public function getBytes(): ?int
+    public function getBytes(): int
     {
-        return $this->bytes;
+        return $this->bytes ?? throw new UnexpectedValueException(
+            'Required field KnowledgeDocumentSummary.bytes is missing from the API response.',
+        );
     }
 
     /**
@@ -98,33 +101,41 @@ class KnowledgeDocumentSummary implements AdditionalDataHolder, Parsable
     /**
      * Gets the fileName property value. Original file name
      */
-    public function getFileName(): ?string
+    public function getFileName(): string
     {
-        return $this->fileName;
+        return $this->fileName ?? throw new UnexpectedValueException(
+            'Required field KnowledgeDocumentSummary.fileName is missing from the API response.',
+        );
     }
 
     /**
      * Gets the id property value. Document ID
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field KnowledgeDocumentSummary.id is missing from the API response.',
+        );
     }
 
     /**
      * Gets the mimeType property value. MIME type
      */
-    public function getMimeType(): ?string
+    public function getMimeType(): string
     {
-        return $this->mimeType;
+        return $this->mimeType ?? throw new UnexpectedValueException(
+            'Required field KnowledgeDocumentSummary.mimeType is missing from the API response.',
+        );
     }
 
     /**
      * Gets the status property value. Processing status
      */
-    public function getStatus(): ?KnowledgeDocumentStatus
+    public function getStatus(): KnowledgeDocumentStatus
     {
-        return $this->status;
+        return $this->status ?? throw new UnexpectedValueException(
+            'Required field KnowledgeDocumentSummary.status is missing from the API response.',
+        );
     }
 
     /**

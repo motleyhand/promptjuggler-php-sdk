@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Call custom Python or JavaScript function.
@@ -78,9 +79,11 @@ class ScriptCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the code property value. The script that this tool executes.
      */
-    public function getCode(): ?string
+    public function getCode(): string
     {
-        return $this->code;
+        return $this->code ?? throw new UnexpectedValueException(
+            'Required field ScriptCall.code is missing from the API response.',
+        );
     }
 
     /**
@@ -94,9 +97,11 @@ class ScriptCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the failFast property value. Whether to stop processing if a tool call fails.
      */
-    public function getFailFast(): ?bool
+    public function getFailFast(): bool
     {
-        return $this->failFast;
+        return $this->failFast ?? throw new UnexpectedValueException(
+            'Required field ScriptCall.failFast is missing from the API response.',
+        );
     }
 
     /**
@@ -120,25 +125,31 @@ class ScriptCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the language property value. The language of the script to execute.
      */
-    public function getLanguage(): ?ScriptCall_language
+    public function getLanguage(): ScriptCall_language
     {
-        return $this->language;
+        return $this->language ?? throw new UnexpectedValueException(
+            'Required field ScriptCall.language is missing from the API response.',
+        );
     }
 
     /**
      * Gets the name property value. The tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field ScriptCall.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?ScriptCall_type
+    public function getType(): ScriptCall_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field ScriptCall.type is missing from the API response.',
+        );
     }
 
     /**

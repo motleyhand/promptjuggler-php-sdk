@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 class CreatePromptRunResponse implements AdditionalDataHolder, Parsable
 {
@@ -69,17 +70,21 @@ class CreatePromptRunResponse implements AdditionalDataHolder, Parsable
     /**
      * Gets the id property value. Prompt run ID
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field CreatePromptRunResponse.id is missing from the API response.',
+        );
     }
 
     /**
      * Gets the thread property value. Thread ID for multi-turn runs
      */
-    public function getThread(): ?string
+    public function getThread(): string
     {
-        return $this->thread;
+        return $this->thread ?? throw new UnexpectedValueException(
+            'Required field CreatePromptRunResponse.thread is missing from the API response.',
+        );
     }
 
     /**

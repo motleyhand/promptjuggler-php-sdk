@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * RAG tool to search knowledge base.
@@ -81,9 +82,11 @@ class KnowledgeSearch implements AdditionalDataHolder, Parsable
     /**
      * Gets the failFast property value. Whether to stop processing if a tool call fails.
      */
-    public function getFailFast(): ?bool
+    public function getFailFast(): bool
     {
-        return $this->failFast;
+        return $this->failFast ?? throw new UnexpectedValueException(
+            'Required field KnowledgeSearch.failFast is missing from the API response.',
+        );
     }
 
     /**
@@ -106,25 +109,31 @@ class KnowledgeSearch implements AdditionalDataHolder, Parsable
     /**
      * Gets the knowledgeBaseId property value. The knowledgeBaseId property
      */
-    public function getKnowledgeBaseId(): ?string
+    public function getKnowledgeBaseId(): string
     {
-        return $this->knowledgeBaseId;
+        return $this->knowledgeBaseId ?? throw new UnexpectedValueException(
+            'Required field KnowledgeSearch.knowledgeBaseId is missing from the API response.',
+        );
     }
 
     /**
      * Gets the name property value. The tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field KnowledgeSearch.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?KnowledgeSearch_type
+    public function getType(): KnowledgeSearch_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field KnowledgeSearch.type is missing from the API response.',
+        );
     }
 
     /**

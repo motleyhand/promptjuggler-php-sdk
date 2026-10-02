@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * JSON schema response format.
@@ -99,17 +100,21 @@ class JsonSchemaFormat implements AdditionalDataHolder, Parsable
     /**
      * Gets the name property value. Schema name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field JsonSchemaFormat.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the schema property value. The JSON schema as string.
      */
-    public function getSchema(): ?string
+    public function getSchema(): string
     {
-        return $this->schema;
+        return $this->schema ?? throw new UnexpectedValueException(
+            'Required field JsonSchemaFormat.schema is missing from the API response.',
+        );
     }
 
     /**
@@ -123,9 +128,11 @@ class JsonSchemaFormat implements AdditionalDataHolder, Parsable
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?JsonSchemaFormat_type
+    public function getType(): JsonSchemaFormat_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field JsonSchemaFormat.type is missing from the API response.',
+        );
     }
 
     /**

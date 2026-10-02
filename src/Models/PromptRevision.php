@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Prompt revision
@@ -128,66 +129,82 @@ class PromptRevision implements AdditionalDataHolder, Parsable
     /**
      * Gets the id property value. Prompt revision ID.
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.id is missing from the API response.',
+        );
     }
 
     /**
      * Gets the memory property value. Memory mode.
      */
-    public function getMemory(): ?Memory
+    public function getMemory(): Memory
     {
-        return $this->memory;
+        return $this->memory ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.memory is missing from the API response.',
+        );
     }
 
     /**
      * Gets the messages property value. User and assistant messages.
-     * @return array<ContentMessageResponse>|null
+     * @return array<ContentMessageResponse>
      */
-    public function getMessages(): ?array
+    public function getMessages(): array
     {
-        return $this->messages;
+        return $this->messages ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.messages is missing from the API response.',
+        );
     }
 
     /**
      * Gets the model property value. AI model.
      */
-    public function getModel(): ?Model
+    public function getModel(): Model
     {
-        return $this->model;
+        return $this->model ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.model is missing from the API response.',
+        );
     }
 
     /**
      * Gets the modelParams property value. Model parameters.
      */
-    public function getModelParams(): ?ModelParams
+    public function getModelParams(): ModelParams
     {
-        return $this->modelParams;
+        return $this->modelParams ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.modelParams is missing from the API response.',
+        );
     }
 
     /**
      * Gets the promptId property value. Prompt ID.
      */
-    public function getPromptId(): ?string
+    public function getPromptId(): string
     {
-        return $this->promptId;
+        return $this->promptId ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.promptId is missing from the API response.',
+        );
     }
 
     /**
      * Gets the provider property value. AI provider.
      */
-    public function getProvider(): ?Provider
+    public function getProvider(): Provider
     {
-        return $this->provider;
+        return $this->provider ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.provider is missing from the API response.',
+        );
     }
 
     /**
      * Gets the responseFormat property value. AI model response format.
      */
-    public function getResponseFormat(): ?ResponseFormat
+    public function getResponseFormat(): ResponseFormat
     {
-        return $this->responseFormat;
+        return $this->responseFormat ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.responseFormat is missing from the API response.',
+        );
     }
 
     /**
@@ -200,11 +217,13 @@ class PromptRevision implements AdditionalDataHolder, Parsable
 
     /**
      * Gets the tools property value. Available tools.
-     * @return array<Tool>|null
+     * @return array<Tool>
      */
-    public function getTools(): ?array
+    public function getTools(): array
     {
-        return $this->tools;
+        return $this->tools ?? throw new UnexpectedValueException(
+            'Required field PromptRevision.tools is missing from the API response.',
+        );
     }
 
     /**

@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * A source the model cited.
@@ -72,17 +73,21 @@ class Citation implements AdditionalDataHolder, Parsable
     /**
      * Gets the title property value. The title property
      */
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
-        return $this->title;
+        return $this->title ?? throw new UnexpectedValueException(
+            'Required field Citation.title is missing from the API response.',
+        );
     }
 
     /**
      * Gets the url property value. The url property
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
-        return $this->url;
+        return $this->url ?? throw new UnexpectedValueException(
+            'Required field Citation.url is missing from the API response.',
+        );
     }
 
     /**

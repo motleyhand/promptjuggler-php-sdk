@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Referencing the prompt revision either by id or version number or tag.
@@ -58,9 +59,11 @@ class VersionRef implements AdditionalDataHolder, Parsable
     /**
      * Gets the definitionId property value. Definition – prompt or workflow – ID.
      */
-    public function getDefinitionId(): ?string
+    public function getDefinitionId(): string
     {
-        return $this->definitionId;
+        return $this->definitionId ?? throw new UnexpectedValueException(
+            'Required field VersionRef.definitionId is missing from the API response.',
+        );
     }
 
     /**
@@ -82,9 +85,11 @@ class VersionRef implements AdditionalDataHolder, Parsable
     /**
      * Gets the idOrTag property value. Revision ID or version number or tag.
      */
-    public function getIdOrTag(): ?VersionRef_idOrTag
+    public function getIdOrTag(): VersionRef_idOrTag
     {
-        return $this->idOrTag;
+        return $this->idOrTag ?? throw new UnexpectedValueException(
+            'Required field VersionRef.idOrTag is missing from the API response.',
+        );
     }
 
     /**

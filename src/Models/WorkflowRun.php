@@ -10,6 +10,7 @@ use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+use UnexpectedValueException;
 
 /**
  * Workflow run status and results.
@@ -98,18 +99,22 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     /**
      * Gets the createdAt property value. Timestamp when the run was created.
      */
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return $this->createdAt ?? throw new UnexpectedValueException(
+            'Required field WorkflowRun.createdAt is missing from the API response.',
+        );
     }
 
     /**
      * Gets the errors property value. Node run messages: failures, warnings from nodes that completed anyway (e.g. a non-fail-fast assertion), and the latest error of a node still retrying. Non-empty does not mean the run failed — read `status`.
-     * @return array<string>|null
+     * @return array<string>
      */
-    public function getErrors(): ?array
+    public function getErrors(): array
     {
-        return $this->errors;
+        return $this->errors ?? throw new UnexpectedValueException(
+            'Required field WorkflowRun.errors is missing from the API response.',
+        );
     }
 
     /**
@@ -156,25 +161,31 @@ class WorkflowRun implements AdditionalDataHolder, Parsable
     /**
      * Gets the id property value. Workflow run ID.
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field WorkflowRun.id is missing from the API response.',
+        );
     }
 
     /**
      * Gets the outputs property value. Map of output node names to their values. Only completed output nodes appear, so a pending or failed run can return a partial map — read `status` for completeness.
      */
-    public function getOutputs(): ?WorkflowRun_outputs
+    public function getOutputs(): WorkflowRun_outputs
     {
-        return $this->outputs;
+        return $this->outputs ?? throw new UnexpectedValueException(
+            'Required field WorkflowRun.outputs is missing from the API response.',
+        );
     }
 
     /**
      * Gets the status property value. Current run status.
      */
-    public function getStatus(): ?RunStatus
+    public function getStatus(): RunStatus
     {
-        return $this->status;
+        return $this->status ?? throw new UnexpectedValueException(
+            'Required field WorkflowRun.status is missing from the API response.',
+        );
     }
 
     /**

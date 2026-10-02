@@ -27,7 +27,7 @@ $created = $pj->runPrompt('greeting', 'production', inputs: ['name' => 'Ada']);
 
 // Poll for the result
 $run = $pj->getPromptRun($created->getId());
-if ($run->getStatus()?->is(RunStatus::COMPLETED)) {
+if ($run->getStatus()->is(RunStatus::COMPLETED)) {
     echo $run->getOutput();
 }
 ```

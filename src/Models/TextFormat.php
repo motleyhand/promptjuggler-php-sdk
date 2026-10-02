@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Text response format.
@@ -66,9 +67,11 @@ class TextFormat implements AdditionalDataHolder, Parsable
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?TextFormat_type
+    public function getType(): TextFormat_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field TextFormat.type is missing from the API response.',
+        );
     }
 
     /**

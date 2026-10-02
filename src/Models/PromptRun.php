@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Prompt run status and result.
@@ -107,18 +108,22 @@ class PromptRun implements AdditionalDataHolder, Parsable
     /**
      * Gets the createdAt property value. Timestamp when the run was created.
      */
-    public function getCreatedAt(): ?DateTime
+    public function getCreatedAt(): DateTime
     {
-        return $this->createdAt;
+        return $this->createdAt ?? throw new UnexpectedValueException(
+            'Required field PromptRun.createdAt is missing from the API response.',
+        );
     }
 
     /**
      * Gets the emitted property value. Payloads produced by emit tools during this run, in call order. Empty until the run completes.
-     * @return array<EmittedItem>|null
+     * @return array<EmittedItem>
      */
-    public function getEmitted(): ?array
+    public function getEmitted(): array
     {
-        return $this->emitted;
+        return $this->emitted ?? throw new UnexpectedValueException(
+            'Required field PromptRun.emitted is missing from the API response.',
+        );
     }
 
     /**
@@ -170,9 +175,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     /**
      * Gets the id property value. Prompt run ID.
      */
-    public function getId(): ?string
+    public function getId(): string
     {
-        return $this->id;
+        return $this->id ?? throw new UnexpectedValueException(
+            'Required field PromptRun.id is missing from the API response.',
+        );
     }
 
     /**
@@ -186,9 +193,11 @@ class PromptRun implements AdditionalDataHolder, Parsable
     /**
      * Gets the status property value. Current run status.
      */
-    public function getStatus(): ?RunStatus
+    public function getStatus(): RunStatus
     {
-        return $this->status;
+        return $this->status ?? throw new UnexpectedValueException(
+            'Required field PromptRun.status is missing from the API response.',
+        );
     }
 
     /**
@@ -201,11 +210,13 @@ class PromptRun implements AdditionalDataHolder, Parsable
 
     /**
      * Gets the transcript property value. The run as a renderable sequence: assistant text, the tools it used, and emit payloads in position. Empty until the run completes. `output` remains the flat text for callers that only need the answer.
-     * @return array<TranscriptItem>|null
+     * @return array<TranscriptItem>
      */
-    public function getTranscript(): ?array
+    public function getTranscript(): array
     {
-        return $this->transcript;
+        return $this->transcript ?? throw new UnexpectedValueException(
+            'Required field PromptRun.transcript is missing from the API response.',
+        );
     }
 
     /**

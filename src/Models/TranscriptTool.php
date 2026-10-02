@@ -9,6 +9,7 @@ use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
 use Microsoft\Kiota\Abstractions\Types\TypeUtils;
+use UnexpectedValueException;
 
 /**
  * A tool the model used: its name and how the call ended.
@@ -73,11 +74,13 @@ class TranscriptTool implements AdditionalDataHolder, Parsable
 
     /**
      * Gets the citations property value. Sources this call returned. Only ever populated by the built-in web_search tool.
-     * @return array<Citation>|null
+     * @return array<Citation>
      */
-    public function getCitations(): ?array
+    public function getCitations(): array
     {
-        return $this->citations;
+        return $this->citations ?? throw new UnexpectedValueException(
+            'Required field TranscriptTool.citations is missing from the API response.',
+        );
     }
 
     /**
@@ -109,34 +112,42 @@ class TranscriptTool implements AdditionalDataHolder, Parsable
     /**
      * Gets the name property value. Tool name, as the model called it.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field TranscriptTool.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the queries property value. Search queries the model ran. Only ever populated by the built-in web_search tool.
-     * @return array<string>|null
+     * @return array<string>
      */
-    public function getQueries(): ?array
+    public function getQueries(): array
     {
-        return $this->queries;
+        return $this->queries ?? throw new UnexpectedValueException(
+            'Required field TranscriptTool.queries is missing from the API response.',
+        );
     }
 
     /**
      * Gets the status property value. How the call ended.
      */
-    public function getStatus(): ?ToolStatus
+    public function getStatus(): ToolStatus
     {
-        return $this->status;
+        return $this->status ?? throw new UnexpectedValueException(
+            'Required field TranscriptTool.status is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?TranscriptTool_type
+    public function getType(): TranscriptTool_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field TranscriptTool.type is missing from the API response.',
+        );
     }
 
     /**

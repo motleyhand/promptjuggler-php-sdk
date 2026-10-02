@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * External HTTP call tool.
@@ -96,9 +97,11 @@ class HttpCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the failFast property value. Whether to stop processing if a tool call fails.
      */
-    public function getFailFast(): ?bool
+    public function getFailFast(): bool
     {
-        return $this->failFast;
+        return $this->failFast ?? throw new UnexpectedValueException(
+            'Required field HttpCall.failFast is missing from the API response.',
+        );
     }
 
     /**
@@ -135,41 +138,51 @@ class HttpCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the method property value. The method property
      */
-    public function getMethod(): ?HttpCall_method
+    public function getMethod(): HttpCall_method
     {
-        return $this->method;
+        return $this->method ?? throw new UnexpectedValueException(
+            'Required field HttpCall.method is missing from the API response.',
+        );
     }
 
     /**
      * Gets the name property value. The tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field HttpCall.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the paramsSchema property value. JSON schema of the parameters this tool expects.
      */
-    public function getParamsSchema(): ?string
+    public function getParamsSchema(): string
     {
-        return $this->paramsSchema;
+        return $this->paramsSchema ?? throw new UnexpectedValueException(
+            'Required field HttpCall.paramsSchema is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?HttpCall_type
+    public function getType(): HttpCall_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field HttpCall.type is missing from the API response.',
+        );
     }
 
     /**
      * Gets the url property value. The URL to call. Can contain ${ENV_VAR} and {{inputName}} placeholders.
      */
-    public function getUrl(): ?string
+    public function getUrl(): string
     {
-        return $this->url;
+        return $this->url ?? throw new UnexpectedValueException(
+            'Required field HttpCall.url is missing from the API response.',
+        );
     }
 
     /**

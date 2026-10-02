@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * One emit-tool call: the tool name and its schema-validated payload.
@@ -74,17 +75,21 @@ class EmittedItem implements AdditionalDataHolder, Parsable
     /**
      * Gets the payload property value. The payload — the tool-call arguments, verbatim.
      */
-    public function getPayload(): ?EmittedItem_payload
+    public function getPayload(): EmittedItem_payload
     {
-        return $this->payload;
+        return $this->payload ?? throw new UnexpectedValueException(
+            'Required field EmittedItem.payload is missing from the API response.',
+        );
     }
 
     /**
      * Gets the tool property value. The emit tool that produced this payload.
      */
-    public function getTool(): ?string
+    public function getTool(): string
     {
-        return $this->tool;
+        return $this->tool ?? throw new UnexpectedValueException(
+            'Required field EmittedItem.tool is missing from the API response.',
+        );
     }
 
     /**

@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * Tool to invoke another prompt.
@@ -81,9 +82,11 @@ class PromptCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the failFast property value. Whether to stop processing if a tool call fails.
      */
-    public function getFailFast(): ?bool
+    public function getFailFast(): bool
     {
-        return $this->failFast;
+        return $this->failFast ?? throw new UnexpectedValueException(
+            'Required field PromptCall.failFast is missing from the API response.',
+        );
     }
 
     /**
@@ -108,25 +111,31 @@ class PromptCall implements AdditionalDataHolder, Parsable
     /**
      * Gets the name property value. The tool’s name.
      */
-    public function getName(): ?string
+    public function getName(): string
     {
-        return $this->name;
+        return $this->name ?? throw new UnexpectedValueException(
+            'Required field PromptCall.name is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?PromptCall_type
+    public function getType(): PromptCall_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field PromptCall.type is missing from the API response.',
+        );
     }
 
     /**
      * Gets the versionRef property value. Referencing the prompt revision either by id or version number or tag.
      */
-    public function getVersionRef(): ?VersionRef
+    public function getVersionRef(): VersionRef
     {
-        return $this->versionRef;
+        return $this->versionRef ?? throw new UnexpectedValueException(
+            'Required field PromptCall.versionRef is missing from the API response.',
+        );
     }
 
     /**

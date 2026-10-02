@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * JSON object response format.
@@ -66,9 +67,11 @@ class JsonObjectFormat implements AdditionalDataHolder, Parsable
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?JsonObjectFormat_type
+    public function getType(): JsonObjectFormat_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field JsonObjectFormat.type is missing from the API response.',
+        );
     }
 
     /**

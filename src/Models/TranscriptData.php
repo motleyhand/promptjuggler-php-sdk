@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 /**
  * An emit-tool payload, in the position it was produced.
@@ -80,25 +81,31 @@ class TranscriptData implements AdditionalDataHolder, Parsable
     /**
      * Gets the payload property value. The payload — the tool-call arguments, verbatim.
      */
-    public function getPayload(): ?TranscriptData_payload
+    public function getPayload(): TranscriptData_payload
     {
-        return $this->payload;
+        return $this->payload ?? throw new UnexpectedValueException(
+            'Required field TranscriptData.payload is missing from the API response.',
+        );
     }
 
     /**
      * Gets the tool property value. The emit tool that produced this payload.
      */
-    public function getTool(): ?string
+    public function getTool(): string
     {
-        return $this->tool;
+        return $this->tool ?? throw new UnexpectedValueException(
+            'Required field TranscriptData.tool is missing from the API response.',
+        );
     }
 
     /**
      * Gets the type property value. The type property
      */
-    public function getType(): ?TranscriptData_type
+    public function getType(): TranscriptData_type
     {
-        return $this->type;
+        return $this->type ?? throw new UnexpectedValueException(
+            'Required field TranscriptData.type is missing from the API response.',
+        );
     }
 
     /**

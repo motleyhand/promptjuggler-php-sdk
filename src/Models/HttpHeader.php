@@ -8,6 +8,7 @@ use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
 use Microsoft\Kiota\Abstractions\Serialization\Parsable;
 use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
 use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
+use UnexpectedValueException;
 
 class HttpHeader implements AdditionalDataHolder, Parsable
 {
@@ -69,17 +70,21 @@ class HttpHeader implements AdditionalDataHolder, Parsable
     /**
      * Gets the key property value. The key property
      */
-    public function getKey(): ?string
+    public function getKey(): string
     {
-        return $this->key;
+        return $this->key ?? throw new UnexpectedValueException(
+            'Required field HttpHeader.key is missing from the API response.',
+        );
     }
 
     /**
      * Gets the value property value. The value property
      */
-    public function getValue(): ?string
+    public function getValue(): string
     {
-        return $this->value;
+        return $this->value ?? throw new UnexpectedValueException(
+            'Required field HttpHeader.value is missing from the API response.',
+        );
     }
 
     /**
