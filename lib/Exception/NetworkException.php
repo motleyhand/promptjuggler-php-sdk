@@ -8,7 +8,7 @@ use Exception;
 use Throwable;
 
 /**
- * Thrown when the request got no response (DNS failure, timeout, offline).
+ * Thrown when the request got no complete response (DNS failure, timeout, a dropped connection).
  */
 final class NetworkException extends Exception implements PromptJugglerException
 {

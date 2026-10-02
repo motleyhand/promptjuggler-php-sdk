@@ -10,14 +10,15 @@ final class KnowledgeDocumentsTest extends SdkTestCase
 {
     public function testGetKnowledgeDocumentIssuesAuthorizedGetRequest(): void
     {
-        $pj = $this->client('sk-test', [self::jsonResponse(['id' => 'doc_1'])]);
+        $pj = $this->client('sk-test', [self::jsonResponse(self::knowledgeDocumentJson('notes.txt'))]);
 
-        $pj->getKnowledgeDocument('doc_1');
+        $document = $pj->getKnowledgeDocument('doc_1');
 
         $request = $this->lastRequest();
         self::assertSame('GET', $request->getMethod());
         self::assertSame('/api/v1/knowledge-documents/doc_1', $request->getUri()->getPath());
         self::assertSame('Bearer sk-test', $request->getHeaderLine('Authorization'));
+        self::assertSame('notes.txt', $document->fileName);
     }
 
     public function testDeleteKnowledgeDocumentIssuesDeleteRequest(): void
@@ -29,5 +30,6 @@ final class KnowledgeDocumentsTest extends SdkTestCase
         $request = $this->lastRequest();
         self::assertSame('DELETE', $request->getMethod());
         self::assertSame('/api/v1/knowledge-documents/doc_1', $request->getUri()->getPath());
+        self::assertSame('Bearer sk-test', $request->getHeaderLine('Authorization'));
     }
 }

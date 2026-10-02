@@ -41,7 +41,9 @@ final class WebhookSignatureTest extends TestCase
         $signedAt = 1_700_000_000;
         $header = $this->header($payload, $signedAt);
 
-        self::assertFalse(WebhookSignature::isValid($payload, $header, self::SECRET, tolerance: 300, now: $signedAt + 600));
+        self::assertFalse(
+            WebhookSignature::isValid($payload, $header, self::SECRET, tolerance: 300, now: $signedAt + 600),
+        );
     }
 
     public function testRejectsAMalformedHeader(): void

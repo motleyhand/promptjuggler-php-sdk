@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use PromptJuggler\Client\OpenEnum;
-
-class Provider extends OpenEnum
+enum Provider: string
 {
-    public const OPENAI = 'openai';
-    public const GEMINI = 'gemini';
-    public const ANTHROPIC = 'anthropic';
+    case Openai = 'openai';
+    case Gemini = 'gemini';
+    case Anthropic = 'anthropic';
 }

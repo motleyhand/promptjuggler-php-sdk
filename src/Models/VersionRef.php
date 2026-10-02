@@ -4,129 +4,18 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use Microsoft\Kiota\Abstractions\Serialization\AdditionalDataHolder;
-use Microsoft\Kiota\Abstractions\Serialization\Parsable;
-use Microsoft\Kiota\Abstractions\Serialization\ParseNode;
-use Microsoft\Kiota\Abstractions\Serialization\SerializationWriter;
-use UnexpectedValueException;
-
 /**
- * Referencing the prompt revision either by id or version number or tag.
+ * A reference to a revision.
  */
-class VersionRef implements AdditionalDataHolder, Parsable
+final readonly class VersionRef
 {
     /**
-     * @var array<string, mixed>|null $additionalData Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
+     * @param string $definitionId Definition – prompt or workflow – ID.
+     * @param int|string $idOrTag Revision ID or version number or tag.
      */
-    private ?array $additionalData = null;
-    
-    /**
-     * @var string|null $definitionId Definition – prompt or workflow – ID.
-     */
-    private ?string $definitionId = null;
-    
-    /**
-     * @var VersionRef_idOrTag|null $idOrTag Revision ID or version number or tag.
-     */
-    private ?VersionRef_idOrTag $idOrTag = null;
-    
-    /**
-     * Instantiates a new VersionRef and sets the default values.
-     */
-    public function __construct()
-    {
-        $this->setAdditionalData([]);
-    }
-
-    /**
-     * Creates a new instance of the appropriate class based on discriminator value
-     * @param ParseNode $parseNode The parse node to use to read the discriminator value and create the object
-     */
-    public static function createFromDiscriminatorValue(ParseNode $parseNode): VersionRef
-    {
-        return new VersionRef();
-    }
-
-    /**
-     * Gets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
-     * @return array<string, mixed>|null
-     */
-    public function getAdditionalData(): ?array
-    {
-        return $this->additionalData;
-    }
-
-    /**
-     * Gets the definitionId property value. Definition – prompt or workflow – ID.
-     */
-    public function getDefinitionId(): string
-    {
-        return $this->definitionId ?? throw new UnexpectedValueException(
-            'Required field VersionRef.definitionId is missing from the API response.',
-        );
-    }
-
-    /**
-     * The deserialization information for the current model
-     * @return array<string, callable(ParseNode): void>
-     */
-    public function getFieldDeserializers(): array
-    {
-        $o = $this;
-
-        return [
-            'definitionId' => static fn (ParseNode $n) => $o->setDefinitionId($n->getStringValue()),
-            'idOrTag' => static fn (ParseNode $n) => $o->setIdOrTag(
-                $n->getObjectValue([VersionRef_idOrTag::class, 'createFromDiscriminatorValue']),
-            ),
-        ];
-    }
-
-    /**
-     * Gets the idOrTag property value. Revision ID or version number or tag.
-     */
-    public function getIdOrTag(): VersionRef_idOrTag
-    {
-        return $this->idOrTag ?? throw new UnexpectedValueException(
-            'Required field VersionRef.idOrTag is missing from the API response.',
-        );
-    }
-
-    /**
-     * Serializes information the current object
-     * @param SerializationWriter $writer Serialization writer to use to serialize this model
-     */
-    public function serialize(SerializationWriter $writer): void
-    {
-        $writer->writeStringValue('definitionId', $this->getDefinitionId());
-        $writer->writeObjectValue('idOrTag', $this->getIdOrTag());
-        $writer->writeAdditionalData($this->getAdditionalData());
-    }
-
-    /**
-     * Sets the AdditionalData property value. Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.
-     * @param array<string,mixed> $value Value to set for the AdditionalData property.
-     */
-    public function setAdditionalData(?array $value): void
-    {
-        $this->additionalData = $value;
-    }
-
-    /**
-     * Sets the definitionId property value. Definition – prompt or workflow – ID.
-     * @param string|null $value Value to set for the definitionId property.
-     */
-    public function setDefinitionId(?string $value): void
-    {
-        $this->definitionId = $value;
-    }
-
-    /**
-     * Sets the idOrTag property value. Revision ID or version number or tag.
-     * @param VersionRef_idOrTag|null $value Value to set for the idOrTag property.
-     */
-    public function setIdOrTag(?VersionRef_idOrTag $value): void
-    {
-        $this->idOrTag = $value;
+    public function __construct(
+        public string $definitionId,
+        public int|string $idOrTag,
+    ) {
     }
 }

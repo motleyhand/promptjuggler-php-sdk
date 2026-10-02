@@ -4,60 +4,66 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client;
 
-use Exception;
-use GuzzleHttp\ClientInterface;
-use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Psr7\MultipartStream;
-use LogicException;
-use Microsoft\Kiota\Abstractions\ApiException as KiotaApiException;
-use Microsoft\Kiota\Abstractions\Authentication\BaseBearerTokenAuthenticationProvider;
-use Microsoft\Kiota\Abstractions\MultiPartBody;
-use Microsoft\Kiota\Abstractions\RequestAdapter;
-use Microsoft\Kiota\Http\GuzzleRequestAdapter;
-use Microsoft\Kiota\Http\KiotaClientFactory;
-use PromptJuggler\Client\Auth\StaticAccessTokenProvider;
+use CuyZ\Valinor\Mapper\MappingError;
+use CuyZ\Valinor\Mapper\Tree\Message\NodeMessage;
+use CuyZ\Valinor\Mapper\TreeMapper;
+use CuyZ\Valinor\MapperBuilder;
+use Http\Discovery\Psr18Client;
+use InvalidArgumentException;
+use JsonException;
 use PromptJuggler\Client\Exception\ApiException;
 use PromptJuggler\Client\Exception\DecodeException;
 use PromptJuggler\Client\Exception\NetworkException;
 use PromptJuggler\Client\Exception\PromptJugglerException;
-use PromptJuggler\Client\Http\ResponseRecordingClient;
-use PromptJuggler\Client\Models\CreatePromptRun;
-use PromptJuggler\Client\Models\CreatePromptRun_envVars;
-use PromptJuggler\Client\Models\CreatePromptRun_inputs;
-use PromptJuggler\Client\Models\CreatePromptRun_metadata;
-use PromptJuggler\Client\Models\CreatePromptRun_priority;
+use PromptJuggler\Client\Mapping\ModelMapping;
 use PromptJuggler\Client\Models\CreatePromptRunResponse;
-use PromptJuggler\Client\Models\CreateWorkflowRun;
-use PromptJuggler\Client\Models\CreateWorkflowRun_envVars;
-use PromptJuggler\Client\Models\CreateWorkflowRun_inputs;
-use PromptJuggler\Client\Models\CreateWorkflowRun_metadata;
-use PromptJuggler\Client\Models\CreateWorkflowRun_priority;
 use PromptJuggler\Client\Models\CreateWorkflowRunResponse;
-use PromptJuggler\Client\Models\ErrorResponse;
 use PromptJuggler\Client\Models\KnowledgeBaseResponse;
 use PromptJuggler\Client\Models\KnowledgeDocumentResponse;
+use PromptJuggler\Client\Models\Priority;
 use PromptJuggler\Client\Models\PromptRevision;
 use PromptJuggler\Client\Models\PromptRun;
 use PromptJuggler\Client\Models\StreamTokenResponse;
 use PromptJuggler\Client\Models\WorkflowRun;
-use TypeError;
+use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use SensitiveParameter;
 
 /**
- * Synchronous, ergonomic entry point to the PromptJuggler API. Wraps the generated
- * Kiota client: flat methods in, generated typed models out.
+ * Synchronous entry point to the PromptJuggler API: flat methods in, generated readonly models out.
  */
 final class PromptJuggler
 {
-    private readonly ResponseRecordingClient $http;
-    private readonly RequestAdapter $adapter;
-    private readonly PromptJugglerClient $client;
+    // Untyped: typed class constants need PHP 8.3.
+    public const DEFAULT_BASE_URL = 'https://promptjuggler.com';
 
-    public function __construct(string $apiKey, ?ClientInterface $httpClient = null)
-    {
-        $authProvider = new BaseBearerTokenAuthenticationProvider(new StaticAccessTokenProvider($apiKey));
-        $this->http = new ResponseRecordingClient($httpClient ?? KiotaClientFactory::create());
-        $this->adapter = new GuzzleRequestAdapter($authProvider, null, null, $this->http);
-        $this->client = new PromptJugglerClient($this->adapter);
+    private readonly Psr18Client $http;
+    private readonly string $baseUrl;
+    private readonly TreeMapper $mapper;
+
+    /**
+     * @param ClientInterface|null $httpClient Any PSR-18 client, discovered when omitted. Request
+     *                                         factories are discovered too, unless the client is one.
+     */
+    public function __construct(
+        #[SensitiveParameter]
+        private readonly string $apiKey,
+        ?ClientInterface $httpClient = null,
+        string $baseUrl = self::DEFAULT_BASE_URL,
+    ) {
+        $this->http = new Psr18Client($httpClient);
+        $this->baseUrl = rtrim($baseUrl, '/');
+        $this->mapper = ModelMapping::configure(
+            (new MapperBuilder())
+                // The API adds response fields without a version bump.
+                ->allowSuperfluousKeys()
+                // Free-form payloads are array<string, mixed>.
+                ->allowPermissiveTypes()
+                ->supportDateFormats('Y-m-d\TH:i:s.uP', 'Y-m-d\TH:i:sP'),
+        )->mapper();
     }
 
     /**
@@ -65,62 +71,39 @@ final class PromptJuggler
      */
     public function getPrompt(string $slug, int|string $version): PromptRevision
     {
-        return $this->send(
-            fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->get()->wait(),
-        );
+        return $this->decode(PromptRevision::class, $this->send($this->request(
+            'GET',
+            '/api/v1/prompts/' . rawurlencode($slug) . '/' . rawurlencode((string) $version),
+        )));
     }
 
     /**
      * @param array<string, string> $inputs
      * @param array<string, string>|null $envVars
-     * @param array<string, string|string[]>|null $metadata
+     * @param array<string, string|list<string>>|null $metadata
      * @throws PromptJugglerException
      */
     public function runPrompt(
         string $slug,
         int|string $version,
         array $inputs,
-        ?string $priority = null,
+        ?Priority $priority = null,
         ?string $thread = null,
         ?string $environment = null,
         ?array $envVars = null,
         ?array $metadata = null,
         ?string $channel = null,
     ): CreatePromptRunResponse {
-        $body = new CreatePromptRun();
-
-        $inputsModel = new CreatePromptRun_inputs();
-        $inputsModel->setAdditionalData($inputs);
-        $body->setInputs($inputsModel);
-
-        if ($priority !== null) {
-            $body->setPriority(new CreatePromptRun_priority($priority));
-        }
-        if ($thread !== null) {
-            $body->setThread($thread);
-        }
-        if ($environment !== null) {
-            $body->setEnvironment($environment);
-        }
-        if ($envVars !== null) {
-            $envVarsModel = new CreatePromptRun_envVars();
-            $envVarsModel->setAdditionalData($envVars);
-            $body->setEnvVars($envVarsModel);
-        }
-        if ($metadata !== null) {
-            $metadataModel = new CreatePromptRun_metadata();
-            $metadataModel->setAdditionalData($metadata);
-            $body->setMetadata($metadataModel);
-        }
-        if ($channel !== null) {
-            $body->setChannel($channel);
-        }
-
-        return $this->send(
-            fn () => $this->client->api()->v1()->prompts()->bySlug($slug)->byVersion((string) $version)->runs()->post(
-                $body,
-            )->wait(),
-        );
+        return $this->decode(CreatePromptRunResponse::class, $this->send($this->withJson(
+            $this->request(
+                'POST',
+                '/api/v1/prompts/' . rawurlencode($slug) . '/' . rawurlencode((string) $version) . '/runs',
+            ),
+            self::withoutNulls([
+                ...self::runFields($inputs, $priority, $thread, $environment, $envVars, $metadata),
+                'channel' => $channel,
+            ]),
+        )));
     }
 
     /**
@@ -128,56 +111,35 @@ final class PromptJuggler
      */
     public function getPromptRun(string $id): PromptRun
     {
-        return $this->send(fn () => $this->client->api()->v1()->promptruns()->byId($id)->get()->wait());
+        return $this->decode(PromptRun::class, $this->send($this->request(
+            'GET',
+            '/api/v1/promptruns/' . rawurlencode($id),
+        )));
     }
 
     /**
      * @param array<string, string> $inputs
      * @param array<string, string>|null $envVars
-     * @param array<string, string|string[]>|null $metadata
+     * @param array<string, string|list<string>>|null $metadata
      * @throws PromptJugglerException
      */
     public function runWorkflow(
         string $slug,
         int|string $version,
         array $inputs,
-        ?string $priority = null,
+        ?Priority $priority = null,
         ?string $thread = null,
         ?string $environment = null,
         ?array $envVars = null,
         ?array $metadata = null,
     ): CreateWorkflowRunResponse {
-        $body = new CreateWorkflowRun();
-
-        $inputsModel = new CreateWorkflowRun_inputs();
-        $inputsModel->setAdditionalData($inputs);
-        $body->setInputs($inputsModel);
-
-        if ($priority !== null) {
-            $body->setPriority(new CreateWorkflowRun_priority($priority));
-        }
-        if ($thread !== null) {
-            $body->setThread($thread);
-        }
-        if ($environment !== null) {
-            $body->setEnvironment($environment);
-        }
-        if ($envVars !== null) {
-            $envVarsModel = new CreateWorkflowRun_envVars();
-            $envVarsModel->setAdditionalData($envVars);
-            $body->setEnvVars($envVarsModel);
-        }
-        if ($metadata !== null) {
-            $metadataModel = new CreateWorkflowRun_metadata();
-            $metadataModel->setAdditionalData($metadata);
-            $body->setMetadata($metadataModel);
-        }
-
-        return $this->send(
-            fn () => $this->client->api()->v1()->workflows()->bySlug($slug)->byVersion((string) $version)->runs()->post(
-                $body,
-            )->wait(),
-        );
+        return $this->decode(CreateWorkflowRunResponse::class, $this->send($this->withJson(
+            $this->request(
+                'POST',
+                '/api/v1/workflows/' . rawurlencode($slug) . '/' . rawurlencode((string) $version) . '/runs',
+            ),
+            self::withoutNulls(self::runFields($inputs, $priority, $thread, $environment, $envVars, $metadata)),
+        )));
     }
 
     /**
@@ -185,7 +147,10 @@ final class PromptJuggler
      */
     public function getWorkflowRun(string $id): WorkflowRun
     {
-        return $this->send(fn () => $this->client->api()->v1()->workflowruns()->byId($id)->get()->wait());
+        return $this->decode(WorkflowRun::class, $this->send($this->request(
+            'GET',
+            '/api/v1/workflowruns/' . rawurlencode($id),
+        )));
     }
 
     /**
@@ -199,9 +164,10 @@ final class PromptJuggler
      */
     public function createStreamToken(string $thread): StreamTokenResponse
     {
-        return $this->send(
-            fn () => $this->client->api()->v1()->threads()->byThread($thread)->streamToken()->post()->wait(),
-        );
+        return $this->decode(StreamTokenResponse::class, $this->send($this->request(
+            'POST',
+            '/api/v1/threads/' . rawurlencode($thread) . '/stream-token',
+        )));
     }
 
     /**
@@ -209,7 +175,10 @@ final class PromptJuggler
      */
     public function getKnowledgeBase(string $slug): KnowledgeBaseResponse
     {
-        return $this->send(fn () => $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->get()->wait());
+        return $this->decode(KnowledgeBaseResponse::class, $this->send($this->request(
+            'GET',
+            '/api/v1/knowledge-bases/' . rawurlencode($slug),
+        )));
     }
 
     /**
@@ -217,7 +186,10 @@ final class PromptJuggler
      */
     public function getKnowledgeDocument(string $id): KnowledgeDocumentResponse
     {
-        return $this->send(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->get()->wait());
+        return $this->decode(KnowledgeDocumentResponse::class, $this->send($this->request(
+            'GET',
+            '/api/v1/knowledge-documents/' . rawurlencode($id),
+        )));
     }
 
     /**
@@ -225,7 +197,7 @@ final class PromptJuggler
      */
     public function deleteKnowledgeDocument(string $id): void
     {
-        $this->sendVoid(fn () => $this->client->api()->v1()->knowledgeDocuments()->byId($id)->delete()->wait());
+        $this->send($this->request('DELETE', '/api/v1/knowledge-documents/' . rawurlencode($id)));
     }
 
     /**
@@ -235,103 +207,197 @@ final class PromptJuggler
      */
     public function uploadDocuments(string $slug, array $files): array
     {
-        $index = 0;
-        $parts = [];
-        foreach ($files as $filename => $contents) {
-            $parts[] = ['name' => "files[{$index}]", 'filename' => $filename, 'contents' => $contents];
-            ++$index;
-        }
-        $multipart = new MultipartStream($parts);
-
-        // Kiota's MultiPartBody can't set per-part filenames, but this endpoint needs
-        // them (the server reads getClientOriginalName). Build the multipart body with
-        // Guzzle and inject it into the request the generated builder would have sent.
-        $requestInfo = $this->client->api()->v1()->knowledgeBases()->bySlug($slug)->documents()
-            // @phpstan-ignore missingType.checkedException (Kiota bug: MultiPartBody::__construct's @throws Exception is really RandomException from random_bytes)
-            ->toPostRequestInformation(new MultiPartBody())
+        // Random, so no file's contents can contain it.
+        $boundary = bin2hex(random_bytes(20));
+        $parts = array_map(
+            // The server takes each document's name from its part's filename.
+            static fn (int $index, string $filename, string $contents): string => "--{$boundary}\r\n"
+                . "Content-Disposition: form-data; name=\"files[{$index}]\"; filename=\"{$filename}\"\r\n"
+                . "Content-Type: application/octet-stream\r\n\r\n{$contents}\r\n",
+            array_keys(array_values($files)),
+            // PHP turns numeric-string keys into ints.
+            array_map(
+                static fn (int|string $filename): string => self::quotable((string) $filename),
+                array_keys($files),
+            ),
+            array_values($files),
+        );
+        $request = $this->request('POST', '/api/v1/knowledge-bases/' . rawurlencode($slug) . '/documents')
+            ->withHeader('Content-Type', "multipart/form-data; boundary={$boundary}")
+            ->withBody($this->http->createStream(implode('', $parts) . "--{$boundary}--\r\n"))
         ;
-        $requestInfo->content = $multipart;
-        $requestInfo->setHeaders([
-            'Accept' => 'application/json',
-            'Content-Type' => 'multipart/form-data; boundary=' . $multipart->getBoundary(),
-        ]);
-
-        return array_values($this->send(fn () => $this->adapter->sendCollectionAsync(
-            $requestInfo,
-            [KnowledgeDocumentResponse::class, 'createFromDiscriminatorValue'],
-            ['4XX' => [ErrorResponse::class, 'createFromDiscriminatorValue'], '5XX' => [
-                ErrorResponse::class,
-                'createFromDiscriminatorValue',
-            ]],
-        )->wait()));
-    }
-
-    /**
-     * Run a request that returns a value, guaranteeing a non-null result for the caller.
-     *
-     * @template T
-     * @param callable(): (T|null) $request
-     * @return T
-     * @throws PromptJugglerException
-     */
-    private function send(callable $request): mixed
-    {
-        return $this->call($request) ?? throw new DecodeException('The API returned an empty response.');
-    }
-
-    /**
-     * Run a request with no response body (e.g. DELETE).
-     *
-     * @param callable(): mixed $request
-     * @throws PromptJugglerException
-     */
-    private function sendVoid(callable $request): void
-    {
-        $this->call($request);
-    }
-
-    /**
-     * Run a request, translating what Kiota and Guzzle throw into the SDK's own exceptions.
-     *
-     * @template T
-     * @param callable(): T $request
-     * @return T
-     * @throws ApiException|DecodeException|NetworkException
-     */
-    private function call(callable $request): mixed
-    {
-        $this->http->forget();
 
         try {
-            return $request();
-        } catch (KiotaApiException $e) {
-            throw $this->translate($e);
-        } catch (TransferException $e) {
-            throw new NetworkException($e->getMessage(), $e);
-        } catch (Exception|TypeError $e) {
-            // Kiota throws plain exceptions (a TypeError for a mistyped enum) on a body it can't read,
-            // whatever the status it came with.
-            $response = $this->http->lastResponse() ?? throw new LogicException($e->getMessage(), 0, $e);
-            $status = $response->getStatusCode();
-
-            throw $status < 400
-                ? new DecodeException($e->getMessage(), $e)
-                : new ApiException(trim("{$status} {$response->getReasonPhrase()}"), $status, $e);
+            return $this->mapper->map(
+                'list<' . KnowledgeDocumentResponse::class . '>',
+                self::json($this->send($request)),
+            );
+        } catch (MappingError $e) {
+            throw self::unexpectedShape($e);
         }
     }
 
-    private function translate(KiotaApiException $e): ApiException
+    private function request(string $method, string $path): RequestInterface
     {
-        return new ApiException($this->serverError() ?? $e->getMessage(), $e->getResponseStatusCode(), $e);
+        return $this->http->createRequest($method, $this->baseUrl . $path)
+            ->withHeader('Authorization', "Bearer {$this->apiKey}")
+            ->withHeader('Accept', 'application/json')
+        ;
     }
 
     /**
-     * The `error` field of the last response's JSON body, if it has one.
+     * @param array<string, mixed> $body
      */
-    private function serverError(): ?string
+    private function withJson(RequestInterface $request, array $body): RequestInterface
     {
-        $body = json_decode((string) $this->http->lastResponse()?->getBody(), true);
+        try {
+            $json = json_encode($body, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        } catch (JsonException $e) {
+            throw new InvalidArgumentException("Cannot encode the request as JSON: {$e->getMessage()}", 0, $e);
+        }
 
-        return \is_array($body) && \is_string($body['error'] ?? null) ? $body['error'] : null;
+        return $request->withHeader('Content-Type', 'application/json')->withBody($this->http->createStream($json));
+    }
+
+    /**
+     * @return string The response body.
+     * @throws ApiException|NetworkException
+     */
+    private function send(RequestInterface $request): string
+    {
+        try {
+            $response = $this->http->sendRequest($request);
+        } catch (ClientExceptionInterface $e) {
+            throw new NetworkException($e->getMessage(), $e);
+        }
+        $body = self::body($response);
+
+        $status = $response->getStatusCode();
+        if ($status < 200 || $status >= 300) {
+            throw new ApiException(
+                self::serverError($body) ?? trim("{$status} {$response->getReasonPhrase()}"),
+                $status,
+            );
+        }
+
+        return $body;
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @return T
+     * @throws DecodeException
+     */
+    private function decode(string $class, string $body): object
+    {
+        try {
+            return $this->mapper->map($class, self::json($body));
+        } catch (MappingError $e) {
+            throw self::unexpectedShape($e);
+        }
+    }
+
+    /**
+     * Request fields shared by prompt and workflow runs. Maps go out as objects, so an empty or
+     * numeric-keyed one isn't encoded as a JSON list.
+     *
+     * @param array<string, string> $inputs
+     * @param array<string, string>|null $envVars
+     * @param array<string, string|list<string>>|null $metadata
+     * @return array<string, mixed>
+     */
+    private static function runFields(
+        array $inputs,
+        ?Priority $priority,
+        ?string $thread,
+        ?string $environment,
+        ?array $envVars,
+        ?array $metadata,
+    ): array {
+        return [
+            'inputs' => (object) $inputs,
+            'priority' => $priority?->value,
+            'thread' => $thread,
+            'environment' => $environment,
+            'envVars' => $envVars === null ? null : (object) $envVars,
+            'metadata' => $metadata === null ? null : (object) $metadata,
+        ];
+    }
+
+    /**
+     * Escapes a filename for a quoted multipart header parameter. PHP's multipart parser
+     * unescapes `\"`; a line break can't be represented at all.
+     */
+    private static function quotable(string $filename): string
+    {
+        if (strpbrk($filename, "\r\n")) {
+            throw new InvalidArgumentException("A filename can't contain a line break: \"{$filename}\".");
+        }
+
+        return addcslashes($filename, '"\\');
+    }
+
+    /**
+     * Drops the arguments the caller left out, so the server applies its own defaults.
+     *
+     * @param array<string, mixed> $fields
+     * @return array<string, mixed>
+     */
+    private static function withoutNulls(array $fields): array
+    {
+        return array_filter($fields, static fn (mixed $value): bool => $value !== null);
+    }
+
+    /**
+     * Reads the body, which a streaming client may still be receiving.
+     *
+     * @throws NetworkException
+     */
+    private static function body(ResponseInterface $response): string
+    {
+        $stream = $response->getBody();
+
+        try {
+            // A logging middleware can leave the body read to its end.
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+
+            return $stream->getContents();
+        } catch (RuntimeException $e) {
+            throw new NetworkException($e->getMessage(), $e);
+        }
+    }
+
+    /**
+     * @throws DecodeException
+     */
+    private static function json(string $body): mixed
+    {
+        try {
+            return json_decode($body, true, flags: JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new DecodeException("The API returned invalid JSON: {$e->getMessage()}", $e);
+        }
+    }
+
+    private static function unexpectedShape(MappingError $e): DecodeException
+    {
+        return new DecodeException('The API returned an unexpected response: ' . implode('; ', array_map(
+            static fn (NodeMessage $message): string => "{$message->path()}: {$message->toString()}",
+            $e->messages()->toArray(),
+        )), $e);
+    }
+
+    /**
+     * The non-empty `error` field of a JSON error body.
+     */
+    private static function serverError(string $body): ?string
+    {
+        $json = json_decode($body, true);
+        $error = \is_array($json) ? $json['error'] ?? null : null;
+
+        return \is_string($error) && $error ? $error : null;
     }
 }

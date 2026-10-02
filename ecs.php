@@ -9,7 +9,7 @@ use Symplify\EasyCodingStandard\Config\ECSConfig;
 
 return ECSConfig::configure()
     ->withCache('.ecs-cache')
-    ->withPaths([__DIR__ . '/lib', __DIR__ . '/src'])
+    ->withPaths([__DIR__ . '/lib', __DIR__ . '/src', __DIR__ . '/tools', __DIR__ . '/tests'])
     ->withRootFiles()
     ->withSets([SetList::MOTLEY])
     ->withSkip([ClassCommentSniff::class, CyclomaticComplexitySniff::class])

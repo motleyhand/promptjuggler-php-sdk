@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Tests;
 
+use DateTimeImmutable;
+
 final class StreamTokensTest extends SdkTestCase
 {
     // Untyped: the SDK supports PHP ^8.2, and typed class constants need 8.3.
@@ -23,6 +25,7 @@ final class StreamTokensTest extends SdkTestCase
         self::assertSame('POST', $request->getMethod());
         self::assertSame('/api/v1/threads/' . self::THREAD . '/stream-token', $request->getUri()->getPath());
         self::assertSame('Bearer sk-test', $request->getHeaderLine('Authorization'));
+        self::assertSame('', $this->rawBody($request));
     }
 
     public function testCreateStreamTokenReturnsTokenAndResolvedStreamUrl(): void
@@ -36,7 +39,8 @@ final class StreamTokensTest extends SdkTestCase
 
         $response = $pj->createStreamToken(self::THREAD);
 
-        self::assertSame('jwt-value', $response->getToken());
-        self::assertSame($url, $response->getUrl());
+        self::assertSame('jwt-value', $response->token);
+        self::assertSame($url, $response->url);
+        self::assertEquals(new DateTimeImmutable('2026-01-01T00:00:00+00:00'), $response->expiresAt);
     }
 }

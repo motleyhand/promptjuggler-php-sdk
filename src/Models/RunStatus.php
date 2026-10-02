@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use PromptJuggler\Client\OpenEnum;
-
-class RunStatus extends OpenEnum
+enum RunStatus: string
 {
-    public const PENDING = 'pending';
-    public const COMPLETED = 'completed';
-    public const FAILED = 'failed';
+    case Pending = 'pending';
+    case Completed = 'completed';
+    case Failed = 'failed';
 }

@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use PromptJuggler\Client\OpenEnum;
-
-class Role extends OpenEnum
+enum Role: string
 {
-    public const ASSISTANT = 'assistant';
-    public const USER = 'user';
+    case Assistant = 'assistant';
+    case User = 'user';
 }

@@ -4,83 +4,51 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Tests;
 
-use InvalidArgumentException;
+use PromptJuggler\Client\Models\Priority;
 
 final class PromptsTest extends SdkTestCase
 {
     public function testGetPromptWithIntegerVersionIssuesAuthorizedGetRequest(): void
     {
-        $pj = $this->client('sk-test', [self::jsonResponse(['slug' => 'greeting'])]);
+        $pj = $this->client('sk-test', [self::jsonResponse(self::promptRevisionJson())]);
 
-        $pj->getPrompt('greeting', 42);
+        $prompt = $pj->getPrompt('greeting', 42);
 
         $request = $this->lastRequest();
         self::assertSame('GET', $request->getMethod());
         self::assertSame('/api/v1/prompts/greeting/42', $request->getUri()->getPath());
         self::assertSame('Bearer sk-test', $request->getHeaderLine('Authorization'));
+        self::assertSame('application/json', $request->getHeaderLine('Accept'));
+        self::assertSame('Answer briefly.', $prompt->systemInstruction);
     }
 
     public function testGetPromptAcceptsStringTagAsVersion(): void
     {
-        $pj = $this->client('sk-test', [self::jsonResponse(['slug' => 'greeting'])]);
+        $pj = $this->client('sk-test', [self::jsonResponse(self::promptRevisionJson())]);
 
         $pj->getPrompt('greeting', 'production');
 
         self::assertSame('/api/v1/prompts/greeting/production', $this->lastRequest()->getUri()->getPath());
     }
 
-    // The API adds fields and enum values without a major version, so a published client must
-    // decode a response carrying ones it doesn't know.
-    public function testGetPromptDecodesFieldsAndEnumValuesNewerThanTheSdk(): void
+    public function testGetPromptEncodesPathSegments(): void
     {
-        $pj = $this->client('sk-test', [self::jsonResponse([
-            'id' => '550e8400-e29b-41d4-a716-446655440000',
-            'promptId' => '550e8400-e29b-41d4-a716-446655440001',
-            'memory' => 'stateless',
-            'provider' => 'openai',
-            'model' => 'gpt-9',
-            'modelParams' => ['reasoningEffort' => 'ultra'],
-            'responseFormat' => ['type' => 'text', 'addedLater' => 1],
-            'messages' => [],
-            'tools' => [[
-                'type' => 'http',
-                'name' => 'lookup',
-                'url' => 'https://example.com',
-                'method' => 'QUERY',
-                'paramsSchema' => '{}',
-                'failFast' => false,
-            ]],
-            'addedLater' => true,
-        ])]);
+        $pj = $this->client('sk-test', [self::jsonResponse(self::promptRevisionJson())]);
 
-        $prompt = $pj->getPrompt('greeting', 'production');
+        $pj->getPrompt('a/b c', 'v?1');
 
-        self::assertSame('gpt-9', $prompt->getModel()->value());
-        self::assertSame('ultra', $prompt->getModelParams()->getReasoningEffort()?->value());
-        self::assertSame('QUERY', $prompt->getTools()[0]->getHttpCall()?->getMethod()->value());
-    }
-
-    public function testRunPromptRejectsUnknownPriorityBeforeSending(): void
-    {
-        $pj = $this->client('sk-test', [self::jsonResponse(['id' => 'run_1'])]);
-
-        $this->expectException(InvalidArgumentException::class);
-        try {
-            $pj->runPrompt('greeting', 42, inputs: [], priority: 'urgent');
-        } finally {
-            self::assertSame([], $this->history);
-        }
+        self::assertSame('/api/v1/prompts/a%2Fb%20c/v%3F1', $this->lastRequest()->getUri()->getPath());
     }
 
     public function testRunPromptPostsParamsAsJsonBody(): void
     {
-        $pj = $this->client('sk-test', [self::jsonResponse(['id' => 'run_1'])]);
+        $pj = $this->client('sk-test', [self::jsonResponse(self::createdRunJson())]);
 
-        $pj->runPrompt(
+        $created = $pj->runPrompt(
             'greeting',
             42,
             inputs: ['topic' => 'AI safety'],
-            priority: 'low',
+            priority: Priority::Low,
             thread: 'thread_1',
             environment: 'staging',
             envVars: ['MY_KEY' => 'sk-x'],
@@ -92,7 +60,7 @@ final class PromptsTest extends SdkTestCase
         self::assertSame('POST', $request->getMethod());
         self::assertSame('/api/v1/prompts/greeting/42/runs', $request->getUri()->getPath());
         self::assertSame('Bearer sk-test', $request->getHeaderLine('Authorization'));
-
+        self::assertSame('application/json', $request->getHeaderLine('Content-Type'));
         self::assertEquals([
             'channel' => 'main',
             'environment' => 'staging',
@@ -102,5 +70,47 @@ final class PromptsTest extends SdkTestCase
             'priority' => 'low',
             'thread' => 'thread_1',
         ], $this->jsonBody($request));
+        self::assertSame('0198f0e2-1111-7c1d-8f4b-2a6d5e7c9b10', $created->id);
+        self::assertSame('0198f0e2-2222-7c1d-8f4b-2a6d5e7c9b10', $created->thread);
+    }
+
+    // The server applies its own defaults to what's absent; the SDK must not send the spec's.
+    public function testRunPromptSendsOnlyTheArgumentsPassed(): void
+    {
+        $pj = $this->client('sk-test', [self::jsonResponse(self::createdRunJson())]);
+
+        $pj->runPrompt('g', 1, inputs: []);
+
+        self::assertSame('{"inputs":{}}', $this->rawBody($this->lastRequest()));
+    }
+
+    public function testRunPromptSendsAnExplicitlyEmptyMap(): void
+    {
+        $pj = $this->client('sk-test', [self::jsonResponse(self::createdRunJson())]);
+
+        $pj->runPrompt('g', 1, inputs: ['topic' => 'AI'], envVars: []);
+
+        self::assertSame('{"inputs":{"topic":"AI"},"envVars":{}}', $this->rawBody($this->lastRequest()));
+    }
+
+    public function testRunPromptSendsMetadataListValuesAsJsonArrays(): void
+    {
+        $pj = $this->client('sk-test', [self::jsonResponse(self::createdRunJson())]);
+
+        $pj->runPrompt('g', 1, inputs: [], metadata: ['user_id' => '42', 'tags' => ['a', 'b']]);
+
+        self::assertSame(
+            '{"inputs":{},"metadata":{"user_id":"42","tags":["a","b"]}}',
+            $this->rawBody($this->lastRequest()),
+        );
+    }
+
+    public function testRunPromptKeepsNumericMapKeysAsObjectKeys(): void
+    {
+        $pj = $this->client('sk-test', [self::jsonResponse(self::createdRunJson())]);
+
+        $pj->runPrompt('g', 1, inputs: ['0' => 'zero', '1' => 'one']);
+
+        self::assertSame('{"inputs":{"0":"zero","1":"one"}}', $this->rawBody($this->lastRequest()));
     }
 }

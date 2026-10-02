@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace PromptJuggler\Client\Models;
 
-use PromptJuggler\Client\OpenEnum;
-
-class KnowledgeDocumentStatus extends OpenEnum
+enum KnowledgeDocumentStatus: string
 {
-    public const PENDING = 'pending';
-    public const SEALED = 'sealed';
-    public const READY = 'ready';
-    public const FAILED = 'failed';
+    case Pending = 'pending';
+    case Sealed = 'sealed';
+    case Ready = 'ready';
+    case Failed = 'failed';
 }
