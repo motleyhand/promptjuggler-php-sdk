@@ -6,6 +6,7 @@ namespace PromptJuggler\Client\Models;
 
 enum Model: string
 {
+    case Gpt6_1Sol = 'gpt-6.1-sol';
     case Gpt6Astra = 'gpt-6-astra';
     case Gpt6Sol = 'gpt-6-sol';
     case Gpt6Luna = 'gpt-6-luna';
@@ -44,8 +45,8 @@ enum Model: string
     case ClaudeOpus4_7 = 'claude-opus-4-7';
     case ClaudeOpus4_6 = 'claude-opus-4-6';
     case ClaudeOpus4_5 = 'claude-opus-4-5';
+    case ClaudeSonnet5_5 = 'claude-sonnet-5-5';
     case ClaudeSonnet5 = 'claude-sonnet-5';
     case ClaudeSonnet4_6 = 'claude-sonnet-4-6';
-    case ClaudeSonnet4_5 = 'claude-sonnet-4-5';
     case ClaudeHaiku4_5 = 'claude-haiku-4-5';
 }
