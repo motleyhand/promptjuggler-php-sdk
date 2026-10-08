@@ -48,5 +48,6 @@ enum Model: string
     case ClaudeSonnet5_5 = 'claude-sonnet-5-5';
     case ClaudeSonnet5 = 'claude-sonnet-5';
     case ClaudeSonnet4_6 = 'claude-sonnet-4-6';
+    case ClaudeHaiku5_5 = 'claude-haiku-5-5';
     case ClaudeHaiku4_5 = 'claude-haiku-4-5';
 }
