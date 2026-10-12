@@ -16,7 +16,6 @@ use PromptJuggler\Client\Models\KnowledgeDocumentStatus;
 use PromptJuggler\Client\Models\KnowledgeSearch;
 use PromptJuggler\Client\Models\Mcp;
 use PromptJuggler\Client\Models\Memory;
-use PromptJuggler\Client\Models\Model;
 use PromptJuggler\Client\Models\ModelParamsReasoningEffort;
 use PromptJuggler\Client\Models\ModelParamsVerbosity;
 use PromptJuggler\Client\Models\PromptCall;
@@ -90,10 +89,6 @@ final class ModelMapping
             ->registerConverter(
                 static fn (string $value): Memory|UnknownEnumValue
                     => Memory::tryFrom($value) ?? new UnknownEnumValue($value),
-            )
-            ->registerConverter(
-                static fn (string $value): Model|UnknownEnumValue
-                    => Model::tryFrom($value) ?? new UnknownEnumValue($value),
             )
             ->registerConverter(
                 static fn (string $value): ModelParamsReasoningEffort|UnknownEnumValue

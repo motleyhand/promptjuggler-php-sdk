@@ -14,7 +14,7 @@ final readonly class PromptRevision
      * @param string $promptId Prompt ID.
      * @param Memory|UnknownEnumValue $memory Memory mode.
      * @param Provider|UnknownEnumValue $provider AI provider.
-     * @param Model|UnknownEnumValue $model AI model.
+     * @param string $model AI model.
      * @param ModelParams $modelParams Model parameters.
      * @param ResponseFormat $responseFormat AI model response format.
      * @param list<ContentMessageResponse> $messages User and assistant messages.
@@ -26,7 +26,7 @@ final readonly class PromptRevision
         public string $promptId,
         public Memory|UnknownEnumValue $memory,
         public Provider|UnknownEnumValue $provider,
-        public Model|UnknownEnumValue $model,
+        public string $model,
         public ModelParams $modelParams,
         public ResponseFormat $responseFormat,
         public array $messages,

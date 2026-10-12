@@ -255,6 +255,7 @@ final class DecodingTest extends SdkTestCase
     public function testFieldsAndEnumValuesNewerThanTheSdkDecode(): void
     {
         $pj = $this->client('sk-test', [self::jsonResponse([
+            'provider' => 'mistral',
             'model' => 'gpt-9',
             'modelParams' => ['reasoningEffort' => 'ultra'],
             'responseFormat' => ['type' => 'text', 'addedLater' => 1],
@@ -271,7 +272,8 @@ final class DecodingTest extends SdkTestCase
 
         $prompt = $pj->getPrompt('greeting', 'production');
 
-        self::assertEquals(new UnknownEnumValue('gpt-9'), $prompt->model);
+        self::assertEquals(new UnknownEnumValue('mistral'), $prompt->provider);
+        self::assertSame('gpt-9', $prompt->model);
         self::assertEquals(new UnknownEnumValue('ultra'), $prompt->modelParams->reasoningEffort);
         self::assertEquals(new TextFormat(type: 'text'), $prompt->responseFormat);
         $tool = $prompt->tools[0];
