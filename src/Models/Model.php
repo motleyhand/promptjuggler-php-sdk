@@ -28,9 +28,7 @@ enum Model: string
     case Gpt4oMini = 'gpt-4o-mini';
     case Gemini3_1ProPreview = 'gemini-3.1-pro-preview';
     case Gemini3_8Flash = 'gemini-3.8-flash';
-    case Gemini3_7Flash = 'gemini-3.7-flash';
     case Gemini3_6Flash = 'gemini-3.6-flash';
-    case Gemini3_5Flash = 'gemini-3.5-flash';
     case Gemini3FlashPreview = 'gemini-3-flash-preview';
     case Gemini3_5FlashLite = 'gemini-3.5-flash-lite';
     case Gemini3_1FlashLite = 'gemini-3.1-flash-lite';
