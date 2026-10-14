@@ -12,7 +12,7 @@ final readonly class TokenUsage
         public int $output,
         public int $reasoning,
         public int $total,
-        public ServiceTier|UnknownEnumValue|null $serviceTier = null,
+        public ServiceTier|UnknownEnumValue $serviceTier = ServiceTier::Default,
         public int $inputCacheWrite = 0,
     ) {
     }
