@@ -11,7 +11,7 @@ final readonly class HttpCall implements Tool
 {
     /**
      * @param string $paramsSchema JSON schema of the parameters this tool expects.
-     * @param string $url The URL to call. Can contain ${ENV_VAR} and {{inputName}} placeholders.
+     * @param string $url The URL to call. Can contain ${ENV_VAR} and {{inputName}} placeholders; a password or a credential query parameter (api_key, token, …) must take its secret from one.
      * @param string $name The tool’s name.
      * @param bool $failFast Whether to stop processing if a tool call fails.
      * @param 'http' $type

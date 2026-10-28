@@ -11,7 +11,7 @@ final readonly class Mcp implements Tool
 {
     /**
      * @param string $name The MCP server tool’s name.
-     * @param string $url The URL of the MCP server.
+     * @param string $url The URL of the MCP server. A password or a credential query parameter (api_key, token, …) must take its secret from a placeholder.
      * @param 'mcp' $type
      * @param string|null $authorizationToken Environment variable holding the MCP server’s authorization token, referenced as ${NAME}.
      * @param list<string>|null $allowedTools Tool names the model may call. Empty or omitted allows all of the server’s tools.
